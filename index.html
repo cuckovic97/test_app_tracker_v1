@@ -1,0 +1,1667 @@
+<!DOCTYPE html>
+<html lang="bs">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0">
+<meta name="apple-mobile-web-app-capable" content="yes">
+<meta name="mobile-web-app-capable" content="yes">
+<title>Moj Tracker</title>
+<link rel="manifest" href="manifest.json">
+<link rel="icon" type="image/png" sizes="512x512" href="icon-512.png">
+<link rel="apple-touch-icon" sizes="192x192" href="icon-192.png">
+<meta name="apple-mobile-web-app-capable" content="yes">
+<meta name="apple-mobile-web-app-title" content="Tracker">
+<meta name="theme-color" content="#0f0f0f">
+
+
+
+
+
+<link href="https://fonts.googleapis.com/css2?family=Syne:wght@400;600;700;800&family=DM+Sans:ital,wght@0,300;0,400;0,500;1,300&display=swap" rel="stylesheet">
+<style>
+  :root {
+    --bg: #0f0f0f;
+    --surface: #1a1a1a;
+    --surface2: #242424;
+    --border: #2e2e2e;
+    --accent: #c8f45a;
+    --accent-dim: rgba(200, 244, 90, 0.12);
+    --text: #f0f0f0;
+    --text-muted: #888;
+    --text-dim: #555;
+    --red: #ff5c5c;
+    --orange: #ff9f43;
+    --radius: 16px;
+    --radius-sm: 10px;
+  }
+
+  * { margin: 0; padding: 0; box-sizing: border-box; -webkit-tap-highlight-color: transparent; }
+
+  body {
+    background: var(--bg);
+    color: var(--text);
+    font-family: 'DM Sans', sans-serif;
+    min-height: 100vh;
+    padding-bottom: 100px;
+    font-size: 15px;
+    line-height: 1.5;
+  }
+
+  /* HEADER */
+  .header {
+    padding: 24px 20px 16px;
+    display: flex;
+    justify-content: space-between;
+    align-items: flex-start;
+    border-bottom: 1px solid var(--border);
+    position: sticky;
+    top: 0;
+    background: var(--bg);
+    z-index: 10;
+  }
+  .header-left h1 {
+    font-family: 'Syne', sans-serif;
+    font-size: 22px;
+    font-weight: 800;
+    letter-spacing: -0.5px;
+  }
+  .header-left .date {
+    font-size: 12px;
+    color: var(--text-muted);
+    margin-top: 2px;
+  }
+  .day-score {
+    background: var(--accent);
+    color: #000;
+    border-radius: 50px;
+    padding: 6px 14px;
+    font-family: 'Syne', sans-serif;
+    font-weight: 700;
+    font-size: 13px;
+    white-space: nowrap;
+  }
+
+  /* TABS */
+  .tabs {
+    display: flex;
+    padding: 16px 20px 0;
+    gap: 6px;
+    overflow-x: auto;
+    scrollbar-width: none;
+  }
+  .tabs::-webkit-scrollbar { display: none; }
+  .tab {
+    padding: 8px 16px;
+    border-radius: 50px;
+    border: 1px solid var(--border);
+    font-size: 13px;
+    font-weight: 500;
+    cursor: pointer;
+    white-space: nowrap;
+    background: none;
+    color: var(--text-muted);
+    transition: all 0.2s;
+  }
+  .tab.active {
+    background: var(--accent);
+    border-color: var(--accent);
+    color: #000;
+    font-weight: 700;
+  }
+
+  /* SECTIONS */
+  .section { display: none; padding: 20px; }
+  .section.active { display: block; }
+
+  /* CALORIE RING */
+  .calorie-overview {
+    background: var(--surface);
+    border-radius: var(--radius);
+    padding: 24px;
+    margin-bottom: 20px;
+    display: flex;
+    align-items: center;
+    gap: 24px;
+    border: 1px solid var(--border);
+  }
+  .ring-wrap { position: relative; flex-shrink: 0; }
+  .ring-svg { transform: rotate(-90deg); }
+  .ring-bg { fill: none; stroke: var(--border); stroke-width: 8; }
+  .ring-fill { fill: none; stroke: var(--accent); stroke-width: 8; stroke-linecap: round; transition: stroke-dashoffset 0.6s ease; }
+  .ring-center {
+    position: absolute;
+    top: 50%; left: 50%;
+    transform: translate(-50%, -50%);
+    text-align: center;
+  }
+  .ring-kcal {
+    font-family: 'Syne', sans-serif;
+    font-size: 22px;
+    font-weight: 800;
+    color: var(--accent);
+    line-height: 1;
+  }
+  .ring-label { font-size: 10px; color: var(--text-muted); }
+  .calorie-details { flex: 1; }
+  .calorie-details .goal-text { font-size: 12px; color: var(--text-muted); margin-bottom: 12px; }
+  .macro-row { display: flex; gap: 12px; }
+  .macro {
+    flex: 1;
+    background: var(--surface2);
+    border-radius: var(--radius-sm);
+    padding: 10px;
+    text-align: center;
+  }
+  .macro-val { font-family: 'Syne', sans-serif; font-weight: 700; font-size: 16px; }
+  .macro-name { font-size: 10px; color: var(--text-muted); margin-top: 2px; }
+  .macro.protein .macro-val { color: #ff9f43; }
+  .macro.fat .macro-val { color: #ff5c5c; }
+  .macro.carbs .macro-val { color: #70c8ff; }
+
+  /* SECTION TITLE */
+  .section-title {
+    font-family: 'Syne', sans-serif;
+    font-size: 13px;
+    font-weight: 700;
+    color: var(--text-muted);
+    text-transform: uppercase;
+    letter-spacing: 1px;
+    margin-bottom: 12px;
+  }
+
+  /* ADD FOOD BUTTON */
+  .add-btn {
+    width: 100%;
+    padding: 14px;
+    background: var(--accent-dim);
+    border: 1px dashed var(--accent);
+    border-radius: var(--radius);
+    color: var(--accent);
+    font-family: 'Syne', sans-serif;
+    font-weight: 700;
+    font-size: 14px;
+    cursor: pointer;
+    transition: all 0.2s;
+    margin-bottom: 20px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    gap: 8px;
+  }
+  .add-btn:active { opacity: 0.7; }
+
+  /* FOOD LOG */
+  .food-log { display: flex; flex-direction: column; gap: 10px; margin-bottom: 20px; }
+  .food-entry {
+    background: var(--surface);
+    border-radius: var(--radius-sm);
+    padding: 14px 16px;
+    display: flex;
+    align-items: center;
+    border: 1px solid var(--border);
+    gap: 12px;
+  }
+  .food-entry-icon {
+    width: 36px; height: 36px;
+    border-radius: 10px;
+    background: var(--accent-dim);
+    display: flex; align-items: center; justify-content: center;
+    font-size: 18px;
+    flex-shrink: 0;
+  }
+  .food-entry-info { flex: 1; min-width: 0; }
+  .food-entry-name { font-weight: 500; font-size: 14px; white-space: nowrap; overflow: hidden; text-overflow: ellipsis; }
+  .food-entry-sub { font-size: 12px; color: var(--text-muted); margin-top: 2px; }
+  .food-entry-kcal {
+    font-family: 'Syne', sans-serif;
+    font-weight: 700;
+    font-size: 15px;
+    color: var(--accent);
+    flex-shrink: 0;
+  }
+  .food-entry-del {
+    background: none; border: none; color: var(--text-dim);
+    font-size: 18px; cursor: pointer; padding: 4px; flex-shrink: 0;
+    transition: color 0.2s;
+  }
+  .food-entry-del:active { color: var(--red); }
+
+  /* EMPTY STATE */
+  .empty-state {
+    text-align: center;
+    padding: 40px 20px;
+    color: var(--text-dim);
+    font-size: 14px;
+  }
+  .empty-state .emoji { font-size: 40px; margin-bottom: 12px; }
+
+  /* MODAL OVERLAY */
+  .modal-overlay {
+    position: fixed; inset: 0;
+    background: rgba(0,0,0,0.85);
+    z-index: 100;
+    display: none;
+    align-items: flex-end;
+  }
+  .modal-overlay.open { display: flex; }
+  .modal {
+    background: var(--surface);
+    border-radius: 24px 24px 0 0;
+    padding: 24px 20px 40px;
+    width: 100%;
+    max-height: 90vh;
+    overflow-y: auto;
+    border-top: 1px solid var(--border);
+    animation: slideUp 0.3s ease;
+  }
+  @keyframes slideUp {
+    from { transform: translateY(100%); }
+    to { transform: translateY(0); }
+  }
+  .modal-handle {
+    width: 40px; height: 4px;
+    background: var(--border);
+    border-radius: 2px;
+    margin: 0 auto 20px;
+  }
+  .modal-title {
+    font-family: 'Syne', sans-serif;
+    font-size: 18px;
+    font-weight: 800;
+    margin-bottom: 20px;
+  }
+
+  /* SEARCH */
+  .search-wrap { position: relative; margin-bottom: 16px; }
+  .search-input {
+    width: 100%;
+    padding: 12px 16px 12px 42px;
+    background: var(--surface2);
+    border: 1px solid var(--border);
+    border-radius: var(--radius-sm);
+    color: var(--text);
+    font-size: 15px;
+    font-family: 'DM Sans', sans-serif;
+    outline: none;
+    transition: border-color 0.2s;
+  }
+  .search-input:focus { border-color: var(--accent); }
+  .search-icon {
+    position: absolute; left: 14px; top: 50%;
+    transform: translateY(-50%);
+    color: var(--text-muted);
+    font-size: 16px;
+  }
+
+  /* FOOD LIST */
+  .food-list { display: flex; flex-direction: column; gap: 2px; }
+  .food-item {
+    display: flex; align-items: center;
+    padding: 12px 14px;
+    border-radius: var(--radius-sm);
+    cursor: pointer;
+    transition: background 0.15s;
+    gap: 12px;
+  }
+  .food-item:active, .food-item.selected { background: var(--accent-dim); }
+  .food-item-emoji { font-size: 22px; width: 32px; text-align: center; flex-shrink: 0; }
+  .food-item-info { flex: 1; }
+  .food-item-name { font-size: 14px; font-weight: 500; }
+  .food-item-macros { font-size: 11px; color: var(--text-muted); margin-top: 2px; }
+  .food-item-kcal { font-family: 'Syne', sans-serif; font-weight: 700; font-size: 14px; color: var(--accent); }
+
+  /* AMOUNT INPUT */
+  .amount-section {
+    background: var(--surface2);
+    border-radius: var(--radius);
+    padding: 16px;
+    margin-bottom: 16px;
+    display: none;
+  }
+  .amount-section.visible { display: block; }
+  .amount-section .selected-food {
+    font-weight: 600; margin-bottom: 12px;
+    font-size: 15px;
+  }
+  .amount-row { display: flex; gap: 10px; align-items: center; }
+  .amount-input {
+    flex: 1;
+    padding: 12px 16px;
+    background: var(--surface);
+    border: 1px solid var(--border);
+    border-radius: var(--radius-sm);
+    color: var(--text);
+    font-size: 18px;
+    font-family: 'Syne', sans-serif;
+    font-weight: 700;
+    outline: none;
+    text-align: center;
+    transition: border-color 0.2s;
+  }
+  .amount-input:focus { border-color: var(--accent); }
+  .amount-unit {
+    font-size: 14px; color: var(--text-muted);
+    flex-shrink: 0;
+  }
+  .amount-presets { display: flex; gap: 8px; margin-top: 10px; flex-wrap: wrap; }
+  .preset-btn {
+    padding: 6px 12px;
+    border: 1px solid var(--border);
+    border-radius: 50px;
+    background: none;
+    color: var(--text-muted);
+    font-size: 12px;
+    cursor: pointer;
+    transition: all 0.2s;
+  }
+  .preset-btn:active { background: var(--accent); border-color: var(--accent); color: #000; font-weight: 700; }
+
+  /* MEAL TIME */
+  .time-section { margin-bottom: 16px; }
+  .time-label { font-size: 13px; color: var(--text-muted); margin-bottom: 8px; }
+  .meal-times { display: flex; gap: 8px; flex-wrap: wrap; }
+  .meal-time-btn {
+    padding: 8px 14px;
+    border: 1px solid var(--border);
+    border-radius: 50px;
+    background: none;
+    color: var(--text-muted);
+    font-size: 13px;
+    cursor: pointer;
+    transition: all 0.2s;
+  }
+  .meal-time-btn.active { background: var(--accent); border-color: var(--accent); color: #000; font-weight: 700; }
+
+  /* CONFIRM BTN */
+  .confirm-btn {
+    width: 100%;
+    padding: 16px;
+    background: var(--accent);
+    border: none;
+    border-radius: var(--radius);
+    color: #000;
+    font-family: 'Syne', sans-serif;
+    font-weight: 800;
+    font-size: 16px;
+    cursor: pointer;
+    transition: opacity 0.2s;
+    margin-top: 8px;
+  }
+  .confirm-btn:disabled { opacity: 0.3; cursor: not-allowed; }
+  .confirm-btn:not(:disabled):active { opacity: 0.8; }
+
+  /* SETTINGS */
+  .settings-card {
+    background: var(--surface);
+    border-radius: var(--radius);
+    border: 1px solid var(--border);
+    margin-bottom: 16px;
+    overflow: hidden;
+  }
+  .settings-item {
+    display: flex; align-items: center;
+    padding: 16px;
+    gap: 14px;
+    border-bottom: 1px solid var(--border);
+  }
+  .settings-item:last-child { border-bottom: none; }
+  .settings-item-icon {
+    font-size: 20px; width: 32px; text-align: center;
+  }
+  .settings-item-info { flex: 1; }
+  .settings-item-label { font-size: 14px; font-weight: 500; }
+  .settings-item-sub { font-size: 12px; color: var(--text-muted); margin-top: 2px; }
+  .settings-input {
+    background: var(--surface2);
+    border: 1px solid var(--border);
+    border-radius: 8px;
+    color: var(--text);
+    font-size: 15px;
+    font-family: 'Syne', sans-serif;
+    font-weight: 700;
+    padding: 6px 10px;
+    width: 80px;
+    text-align: center;
+    outline: none;
+  }
+  .settings-input:focus { border-color: var(--accent); }
+
+  /* EXPORT */
+  .export-btn {
+    width: 100%;
+    padding: 14px;
+    background: var(--surface2);
+    border: 1px solid var(--border);
+    border-radius: var(--radius);
+    color: var(--text);
+    font-family: 'DM Sans', sans-serif;
+    font-size: 14px;
+    font-weight: 500;
+    cursor: pointer;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    gap: 8px;
+    transition: border-color 0.2s;
+    margin-bottom: 10px;
+  }
+  .export-btn:active { border-color: var(--accent); color: var(--accent); }
+
+  /* NAV */
+  .bottom-nav {
+    position: fixed; bottom: 0; left: 0; right: 0;
+    background: rgba(15,15,15,0.95);
+    backdrop-filter: blur(20px);
+    border-top: 1px solid var(--border);
+    display: flex;
+    padding: 8px 0 20px;
+    z-index: 20;
+  }
+  .nav-item {
+    flex: 1;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    gap: 4px;
+    padding: 8px;
+    cursor: pointer;
+    background: none;
+    border: none;
+    color: var(--text-dim);
+    font-size: 10px;
+    font-family: 'DM Sans', sans-serif;
+    transition: color 0.2s;
+  }
+  .nav-item.active { color: var(--accent); }
+  .nav-icon { font-size: 22px; }
+
+  /* TOAST */
+  .toast {
+    position: fixed;
+    bottom: 90px; left: 20px; right: 20px;
+    background: var(--accent);
+    color: #000;
+    padding: 14px 20px;
+    border-radius: var(--radius-sm);
+    font-family: 'Syne', sans-serif;
+    font-weight: 700;
+    font-size: 14px;
+    text-align: center;
+    z-index: 200;
+    transform: translateY(20px);
+    opacity: 0;
+    transition: all 0.3s;
+    pointer-events: none;
+  }
+  .toast.show { transform: translateY(0); opacity: 1; }
+
+  /* HISTORY */
+  .history-day {
+    margin-bottom: 20px;
+  }
+  .history-day-header {
+    display: flex; justify-content: space-between; align-items: center;
+    margin-bottom: 10px;
+  }
+  .history-day-title {
+    font-family: 'Syne', sans-serif;
+    font-weight: 700;
+    font-size: 15px;
+  }
+  .history-day-kcal {
+    font-size: 13px; color: var(--accent);
+    font-weight: 600;
+  }
+  .history-card {
+    background: var(--surface);
+    border-radius: var(--radius-sm);
+    border: 1px solid var(--border);
+    overflow: hidden;
+  }
+
+  .category-header {
+    font-size: 11px;
+    font-weight: 700;
+    color: var(--text-muted);
+    text-transform: uppercase;
+    letter-spacing: 1px;
+    padding: 0 0 8px;
+    margin-top: 16px;
+  }
+  .category-header:first-child { margin-top: 0; }
+
+  /* JOURNAL */
+  .journal-compose {
+    background: var(--surface);
+    border-radius: var(--radius);
+    border: 1px solid var(--border);
+    padding: 16px;
+    margin-bottom: 20px;
+  }
+  .journal-compose-header {
+    display: flex; justify-content: space-between; align-items: center;
+    margin-bottom: 12px;
+  }
+  .journal-compose-title {
+    font-family: 'Syne', sans-serif;
+    font-weight: 700;
+    font-size: 15px;
+  }
+  .journal-time {
+    font-size: 11px;
+    color: var(--text-muted);
+  }
+  .journal-tags {
+    display: flex; gap: 6px; flex-wrap: wrap; margin-bottom: 12px;
+  }
+  .journal-tag {
+    padding: 5px 12px;
+    border-radius: 50px;
+    border: 1px solid var(--border);
+    background: none;
+    color: var(--text-muted);
+    font-size: 12px;
+    cursor: pointer;
+    transition: all 0.2s;
+  }
+  .journal-tag.active {
+    border-color: var(--accent);
+    background: var(--accent-dim);
+    color: var(--accent);
+    font-weight: 600;
+  }
+  .journal-textarea {
+    width: 100%;
+    background: var(--surface2);
+    border: 1px solid var(--border);
+    border-radius: var(--radius-sm);
+    color: var(--text);
+    font-family: 'DM Sans', sans-serif;
+    font-size: 15px;
+    line-height: 1.6;
+    padding: 12px 14px;
+    resize: none;
+    outline: none;
+    min-height: 100px;
+    transition: border-color 0.2s;
+    margin-bottom: 10px;
+  }
+  .journal-textarea:focus { border-color: var(--accent); }
+  .journal-textarea::placeholder { color: var(--text-dim); }
+  .journal-actions {
+    display: flex; gap: 8px; align-items: center;
+  }
+  .mic-btn {
+    width: 44px; height: 44px;
+    border-radius: 50%;
+    border: 1.5px solid var(--border);
+    background: var(--surface2);
+    color: var(--text-muted);
+    font-size: 18px;
+    cursor: pointer;
+    display: flex; align-items: center; justify-content: center;
+    transition: all 0.2s;
+    flex-shrink: 0;
+    position: relative;
+  }
+  .mic-btn.listening {
+    border-color: var(--red);
+    background: rgba(255,92,92,0.15);
+    color: var(--red);
+    animation: pulse 1.2s infinite;
+  }
+  @keyframes pulse {
+    0%, 100% { box-shadow: 0 0 0 0 rgba(255,92,92,0.4); }
+    50% { box-shadow: 0 0 0 8px rgba(255,92,92,0); }
+  }
+  .mic-lang {
+    position: absolute;
+    bottom: -2px; right: -2px;
+    background: var(--surface);
+    border-radius: 4px;
+    font-size: 8px;
+    font-weight: 700;
+    padding: 1px 3px;
+    color: var(--text-muted);
+    border: 1px solid var(--border);
+  }
+  .mic-lang-toggle {
+    font-size: 11px;
+    color: var(--text-muted);
+    cursor: pointer;
+    background: none;
+    border: 1px solid var(--border);
+    border-radius: 50px;
+    padding: 4px 10px;
+    transition: all 0.2s;
+  }
+  .mic-lang-toggle.sr { color: #4fc3f7; border-color: #4fc3f7; }
+  .mic-lang-toggle.en { color: #aed581; border-color: #aed581; }
+  .save-entry-btn {
+    flex: 1;
+    padding: 12px;
+    background: var(--accent);
+    border: none;
+    border-radius: var(--radius-sm);
+    color: #000;
+    font-family: 'Syne', sans-serif;
+    font-weight: 800;
+    font-size: 14px;
+    cursor: pointer;
+    transition: opacity 0.2s;
+  }
+  .save-entry-btn:disabled { opacity: 0.3; cursor: not-allowed; }
+  .save-entry-btn:not(:disabled):active { opacity: 0.8; }
+
+  /* MOOD SELECTOR */
+  .mood-row {
+    display: flex; gap: 6px; margin-bottom: 12px;
+  }
+  .mood-btn {
+    flex: 1;
+    padding: 8px 4px;
+    border-radius: var(--radius-sm);
+    border: 1.5px solid var(--border);
+    background: none;
+    font-size: 20px;
+    cursor: pointer;
+    transition: all 0.2s;
+    display: flex; flex-direction: column; align-items: center; gap: 2px;
+  }
+  .mood-btn span { font-size: 9px; color: var(--text-dim); }
+  .mood-btn.active { border-color: var(--accent); background: var(--accent-dim); }
+
+  /* JOURNAL ENTRIES */
+  .journal-entries { display: flex; flex-direction: column; gap: 12px; }
+  .journal-entry {
+    background: var(--surface);
+    border-radius: var(--radius);
+    border: 1px solid var(--border);
+    padding: 16px;
+    position: relative;
+  }
+  .journal-entry-header {
+    display: flex; justify-content: space-between; align-items: flex-start;
+    margin-bottom: 10px;
+  }
+  .journal-entry-meta { display: flex; flex-direction: column; gap: 4px; }
+  .journal-entry-time {
+    font-size: 11px; color: var(--text-muted);
+  }
+  .journal-entry-tags { display: flex; gap: 4px; flex-wrap: wrap; }
+  .journal-entry-tag {
+    font-size: 10px; padding: 2px 8px;
+    border-radius: 50px;
+    border: 1px solid var(--border);
+    color: var(--text-muted);
+  }
+  .journal-entry-tag.General { border-color: #888; color: #888; }
+  .journal-entry-tag.Trening { border-color: var(--orange); color: var(--orange); }
+  .journal-entry-tag.Mood { border-color: #b39ddb; color: #b39ddb; }
+  .journal-entry-tag.Posao { border-color: #4fc3f7; color: #4fc3f7; }
+  .journal-entry-tag.Ciljevi { border-color: var(--accent); color: var(--accent); }
+  .journal-entry-tag.Refleksija { border-color: #f48fb1; color: #f48fb1; }
+  .journal-entry-mood { font-size: 22px; }
+  .journal-entry-text {
+    font-size: 14px; line-height: 1.7;
+    color: var(--text);
+    white-space: pre-wrap;
+    word-break: break-word;
+  }
+  .journal-entry-del {
+    position: absolute; top: 12px; right: 12px;
+    background: none; border: none;
+    color: var(--text-dim); font-size: 16px;
+    cursor: pointer; padding: 4px;
+  }
+  .journal-entry-del:active { color: var(--red); }
+
+  /* VOICE STATUS */
+  .voice-status {
+    font-size: 12px;
+    color: var(--red);
+    text-align: center;
+    min-height: 18px;
+    margin-bottom: 6px;
+    font-style: italic;
+  }
+
+  /* JOURNAL HISTORY FILTER */
+  .journal-filter {
+    display: flex; gap: 6px; flex-wrap: wrap; margin-bottom: 16px;
+  }
+  .jfilter-btn {
+    padding: 5px 12px;
+    border-radius: 50px;
+    border: 1px solid var(--border);
+    background: none;
+    color: var(--text-muted);
+    font-size: 12px;
+    cursor: pointer;
+    transition: all 0.2s;
+  }
+  .jfilter-btn.active {
+    background: var(--surface2);
+    color: var(--text);
+    border-color: var(--text-muted);
+  }
+  .journal-date-group { margin-bottom: 20px; }
+  .journal-date-label {
+    font-family: 'Syne', sans-serif;
+    font-size: 12px;
+    font-weight: 700;
+    color: var(--text-muted);
+    text-transform: uppercase;
+    letter-spacing: 1px;
+    margin-bottom: 10px;
+  }
+</style>
+</head>
+<body>
+
+<!-- HEADER -->
+<div class="header">
+  <div class="header-left">
+    <h1>Moj Tracker</h1>
+    <div class="date" id="headerDate"></div>
+  </div>
+  <div class="day-score" id="dayScore">0 kcal</div>
+</div>
+
+<!-- TABS -->
+<div class="tabs">
+  <button class="tab active" onclick="switchNav('food')">🍽️ Hrana</button>
+  <button class="tab" onclick="switchNav('journal')">📓 Journal</button>
+  <button class="tab" onclick="switchNav('history')">📅 Historija</button>
+  <button class="tab" onclick="switchNav('settings')">⚙️ Postavke</button>
+</div>
+
+<!-- FOOD SECTION -->
+<div class="section active" id="sec-food">
+  <div style="height:20px"></div>
+  
+  <div class="calorie-overview">
+    <div class="ring-wrap">
+      <svg class="ring-svg" width="90" height="90" viewBox="0 0 90 90">
+        <circle class="ring-bg" cx="45" cy="45" r="37"/>
+        <circle class="ring-fill" id="ringFill" cx="45" cy="45" r="37" stroke-dasharray="232.5" stroke-dashoffset="232.5"/>
+      </svg>
+      <div class="ring-center">
+        <div class="ring-kcal" id="totalKcal">0</div>
+        <div class="ring-label">kcal</div>
+      </div>
+    </div>
+    <div class="calorie-details">
+      <div class="goal-text">Cilj: <span id="goalDisplay">2000</span> kcal</div>
+      <div class="macro-row">
+        <div class="macro protein">
+          <div class="macro-val" id="totalProtein">0g</div>
+          <div class="macro-name">Proteini</div>
+        </div>
+        <div class="macro fat">
+          <div class="macro-val" id="totalFat">0g</div>
+          <div class="macro-name">Masti</div>
+        </div>
+        <div class="macro carbs">
+          <div class="macro-val" id="totalCarbs">0g</div>
+          <div class="macro-name">UH</div>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <button class="add-btn" onclick="openModal()">
+    <span>＋</span> Dodaj obrok
+  </button>
+
+  <div class="section-title">Danas</div>
+  <div class="food-log" id="foodLog">
+    <div class="empty-state">
+      <div class="emoji">🍽️</div>
+      <div>Još nisi dodao nijedan obrok.<br>Pritisni dugme iznad!</div>
+    </div>
+  </div>
+</div>
+
+<!-- JOURNAL SECTION -->
+<div class="section" id="sec-journal">
+  <div style="height:20px"></div>
+
+  <!-- COMPOSE -->
+  <div class="journal-compose">
+    <div class="journal-compose-header">
+      <div class="journal-compose-title">Novi unos</div>
+      <div class="journal-time" id="journalCurrentTime"></div>
+    </div>
+
+    <!-- MOOD -->
+    <div class="mood-row">
+      <button class="mood-btn" onclick="selectMood(this,'😤')" data-mood="😤"><span>Loše</span></button>
+      <button class="mood-btn" onclick="selectMood(this,'😐')" data-mood="😐"><span>OK</span></button>
+      <button class="mood-btn" onclick="selectMood(this,'🙂')" data-mood="🙂"><span>Dobro</span></button>
+      <button class="mood-btn" onclick="selectMood(this,'😄')" data-mood="😄"><span>Odlično</span></button>
+      <button class="mood-btn" onclick="selectMood(this,'🔥')" data-mood="🔥"><span>Nabijeno</span></button>
+    </div>
+
+    <!-- TAGS -->
+    <div class="journal-tags">
+      <button class="journal-tag" onclick="toggleTag(this,'General')">📝 General</button>
+      <button class="journal-tag" onclick="toggleTag(this,'Trening')">💪 Trening</button>
+      <button class="journal-tag" onclick="toggleTag(this,'Mood')">💭 Mood</button>
+      <button class="journal-tag" onclick="toggleTag(this,'Posao')">💼 Posao</button>
+      <button class="journal-tag" onclick="toggleTag(this,'Ciljevi')">🎯 Ciljevi</button>
+      <button class="journal-tag" onclick="toggleTag(this,'Refleksija')">🌙 Refleksija</button>
+    </div>
+
+    <!-- TEXT AREA -->
+    <div class="voice-status" id="voiceStatus"></div>
+    <textarea class="journal-textarea" id="journalText" placeholder="Napiši ili izgovori šta ti je na pameti..."></textarea>
+
+    <!-- ACTIONS -->
+    <div class="journal-actions">
+      <button class="mic-btn" id="micBtn" onclick="toggleVoice()" title="Glasovni unos">
+        🎙️
+        <span class="mic-lang" id="micLangLabel">SR</span>
+      </button>
+      <button class="mic-lang-toggle sr" id="langToggle" onclick="toggleLang()">SR 🇷🇸</button>
+      <button class="save-entry-btn" id="saveEntryBtn" onclick="saveJournalEntry()">Sačuvaj unos</button>
+    </div>
+  </div>
+
+  <!-- TODAY'S ENTRIES -->
+  <div class="section-title">Danas</div>
+  <div class="journal-entries" id="journalTodayEntries">
+    <div class="empty-state">
+      <div class="emoji">📓</div>
+      <div>Nema unosa za danas.<br>Napiši ili izgovori nešto!</div>
+    </div>
+  </div>
+
+  <div style="height:16px"></div>
+  <div class="section-title">Prethodni dani</div>
+  <div class="journal-filter" id="journalFilter">
+    <button class="jfilter-btn active" onclick="filterJournal(this,'all')">Sve</button>
+    <button class="jfilter-btn" onclick="filterJournal(this,'Trening')">💪 Trening</button>
+    <button class="jfilter-btn" onclick="filterJournal(this,'Mood')">💭 Mood</button>
+    <button class="jfilter-btn" onclick="filterJournal(this,'Ciljevi')">🎯 Ciljevi</button>
+    <button class="jfilter-btn" onclick="filterJournal(this,'Refleksija')">🌙 Refleksija</button>
+  </div>
+  <div id="journalHistoryEntries"></div>
+</div>
+
+<!-- HISTORY SECTION -->
+<div class="section" id="sec-history">
+  <div style="height:20px"></div>
+  <div class="section-title">Historija obroka</div>
+  <div id="historyLog">
+    <div class="empty-state">
+      <div class="emoji">📅</div>
+      <div>Nema historije još uvijek.</div>
+    </div>
+  </div>
+</div>
+
+<!-- SETTINGS SECTION -->
+<div class="section" id="sec-settings">
+  <div style="height:20px"></div>
+  <div class="section-title">Profil</div>
+  <div class="settings-card">
+    <div class="settings-item">
+      <div class="settings-item-icon">🎯</div>
+      <div class="settings-item-info">
+        <div class="settings-item-label">Kalorijski cilj</div>
+        <div class="settings-item-sub">Dnevni cilj u kcal</div>
+      </div>
+      <input type="number" class="settings-input" id="goalInput" value="2000" onchange="saveGoal()">
+    </div>
+    <div class="settings-item">
+      <div class="settings-item-icon">⚖️</div>
+      <div class="settings-item-info">
+        <div class="settings-item-label">Težina</div>
+        <div class="settings-item-sub">Trenutna težina u kg</div>
+      </div>
+      <input type="number" class="settings-input" id="weightInput" placeholder="75" onchange="saveWeight()">
+    </div>
+  </div>
+
+  <div class="section-title">Podaci</div>
+  <button class="export-btn" onclick="exportData()">📤 Izvezi podatke (JSON)</button>
+  <button class="export-btn" onclick="clearToday()">🗑️ Obriši današnje unose</button>
+</div>
+
+<!-- BOTTOM NAV -->
+<div class="bottom-nav">
+  <button class="nav-item active" id="nav-food" onclick="switchNav('food')">
+    <span class="nav-icon">🍽️</span>
+    Hrana
+  </button>
+  <button class="nav-item" id="nav-journal" onclick="switchNav('journal')">
+    <span class="nav-icon">📓</span>
+    Journal
+  </button>
+  <button class="nav-item" id="nav-history" onclick="switchNav('history')">
+    <span class="nav-icon">📅</span>
+    Historija
+  </button>
+  <button class="nav-item" id="nav-settings" onclick="switchNav('settings')">
+    <span class="nav-icon">⚙️</span>
+    Postavke
+  </button>
+</div>
+
+<!-- ADD FOOD MODAL -->
+<div class="modal-overlay" id="modalOverlay" onclick="closeModalOnBg(event)">
+  <div class="modal">
+    <div class="modal-handle"></div>
+    <div class="modal-title">Dodaj namirnice</div>
+
+    <div class="time-section">
+      <div class="time-label">Obrok</div>
+      <div class="meal-times">
+        <button class="meal-time-btn" onclick="selectMealTime(this, 'Doručak')">🌅 Doručak</button>
+        <button class="meal-time-btn" onclick="selectMealTime(this, 'Ručak')">☀️ Ručak</button>
+        <button class="meal-time-btn" onclick="selectMealTime(this, 'Večera')">🌙 Večera</button>
+        <button class="meal-time-btn" onclick="selectMealTime(this, 'Užina')">🍎 Užina</button>
+      </div>
+    </div>
+
+    <div class="search-wrap">
+      <span class="search-icon">🔍</span>
+      <input type="text" class="search-input" id="foodSearch" placeholder="Pretraži namirnice..." oninput="filterFoods()">
+    </div>
+
+    <div class="amount-section" id="amountSection">
+      <div class="selected-food" id="selectedFoodName"></div>
+      <div class="amount-row">
+        <input type="number" class="amount-input" id="amountInput" value="100" oninput="updatePreview()">
+        <span class="amount-unit">grama</span>
+      </div>
+      <div class="amount-presets">
+        <button class="preset-btn" onclick="setAmount(30)">30g</button>
+        <button class="preset-btn" onclick="setAmount(50)">50g</button>
+        <button class="preset-btn" onclick="setAmount(100)">100g</button>
+        <button class="preset-btn" onclick="setAmount(150)">150g</button>
+        <button class="preset-btn" onclick="setAmount(200)">200g</button>
+      </div>
+      <div id="previewText" style="margin-top:10px; font-size:13px; color:var(--text-muted);"></div>
+    </div>
+
+    <div class="food-list" id="foodList"></div>
+
+    <button class="confirm-btn" id="confirmBtn" onclick="addFood()" disabled>
+      Dodaj u dnevnik
+    </button>
+  </div>
+</div>
+
+<!-- TOAST -->
+<div class="toast" id="toast"></div>
+
+<script>
+// =====================
+// FOOD DATABASE
+// =====================
+const FOODS = [
+  // ⭐ MOJI OBROCI (najčešće korišteno)
+  { id: 'my_egg', emoji: '🥚', name: '⭐ Jaje (veliko, ~60g)', kcal: 80, p: 7, f: 5.5, c: 0.5 },
+  { id: 'my_cheese_fat', emoji: '🧀', name: '⭐ Masni sir (~30% m.m.)', kcal: 330, p: 20, f: 27, c: 1.5 },
+  { id: 'my_bacon_raw', emoji: '🥓', name: '⭐ Slanina sirova (prije pečenja)', kcal: 450, p: 15, f: 45, c: 0 },
+  { id: 'my_avocado', emoji: '🥑', name: '⭐ Avokado (konzervativno)', kcal: 160, p: 2, f: 15, c: 3 },
+  { id: 'my_whey', emoji: '💪', name: '⭐ Whey protein (1 mjera=28g, tvoj brand)', kcal: 396, p: 85.7, f: 4.3, c: 3.9 },
+
+  // Jaja & Mliječni
+  { id: 'egg', emoji: '🥚', name: 'Jaje (prosječno)', kcal: 155, p: 13, f: 11, c: 1.1 },
+  { id: 'egg_white', emoji: '🥛', name: 'Bjelanjak jajeta', kcal: 52, p: 11, f: 0.2, c: 0.7 },
+  { id: 'egg_yolk', emoji: '🥚', name: 'Žumance', kcal: 322, p: 16, f: 27, c: 1.8 },
+  { id: 'cheese_fat', emoji: '🧀', name: 'Masni sir (opći)', kcal: 330, p: 20, f: 27, c: 1.5 },
+  { id: 'cheese_cottage', emoji: '🥣', name: 'Svježi sir (skuta)', kcal: 98, p: 11, f: 4.3, c: 3.4 },
+  { id: 'cheese_mozzarella', emoji: '🧀', name: 'Mocarela', kcal: 280, p: 28, f: 17, c: 3.6 },
+  { id: 'milk', emoji: '🥛', name: 'Mlijeko 3.2%', kcal: 61, p: 3.2, f: 3.2, c: 4.7 },
+  { id: 'yogurt', emoji: '🥛', name: 'Jogurt 3%', kcal: 63, p: 3.5, f: 3.3, c: 4 },
+  { id: 'greek_yogurt', emoji: '🥛', name: 'Grčki jogurt', kcal: 97, p: 9, f: 5, c: 3.6 },
+  { id: 'butter', emoji: '🧈', name: 'Maslac', kcal: 717, p: 0.9, f: 81, c: 0.1 },
+  { id: 'cream_cheese', emoji: '🧀', name: 'Krem sir', kcal: 342, p: 6, f: 34, c: 4 },
+  { id: 'sour_cream', emoji: '🥛', name: 'Kisela pavlaka', kcal: 193, p: 3.2, f: 19, c: 4.3 },
+
+  // Meso & Riba
+  { id: 'chicken_breast', emoji: '🍗', name: 'Piletina (prsa, kuhana)', kcal: 165, p: 31, f: 3.6, c: 0 },
+  { id: 'chicken_thigh', emoji: '🍗', name: 'Pileće bedro (bez kože)', kcal: 209, p: 26, f: 11, c: 0 },
+  { id: 'beef', emoji: '🥩', name: 'Goveđe meso (mljeveno 80/20)', kcal: 254, p: 17, f: 20, c: 0 },
+  { id: 'beef_steak', emoji: '🥩', name: 'Goveđi odrezak', kcal: 250, p: 26, f: 17, c: 0 },
+  { id: 'pork', emoji: '🥩', name: 'Svinjetina', kcal: 297, p: 25, f: 21, c: 0 },
+  { id: 'pork_neck', emoji: '🥩', name: 'Svinjski vrat', kcal: 280, p: 19, f: 23, c: 0 },
+  { id: 'bacon_raw', emoji: '🥓', name: 'Slanina sirova', kcal: 450, p: 15, f: 45, c: 0 },
+  { id: 'bacon_cooked', emoji: '🥓', name: 'Slanina pečena', kcal: 541, p: 37, f: 42, c: 1.4 },
+  { id: 'tuna', emoji: '🐟', name: 'Tuna (konzerva u vodi)', kcal: 116, p: 26, f: 1, c: 0 },
+  { id: 'tuna_oil', emoji: '🐟', name: 'Tuna (konzerva u ulju)', kcal: 198, p: 29, f: 9, c: 0 },
+  { id: 'salmon', emoji: '🐟', name: 'Losos', kcal: 208, p: 20, f: 13, c: 0 },
+  { id: 'sardine', emoji: '🐟', name: 'Sardine (konzerva)', kcal: 208, p: 25, f: 11, c: 0 },
+  { id: 'shrimp', emoji: '🦐', name: 'Škampi', kcal: 99, p: 24, f: 0.3, c: 0.2 },
+  { id: 'turkey', emoji: '🦃', name: 'Puretina (prsa)', kcal: 135, p: 30, f: 1, c: 0 },
+
+  // Prerađeno meso
+  { id: 'sausage', emoji: '🌭', name: 'Kobasica (dimljena)', kcal: 350, p: 14, f: 32, c: 2 },
+  { id: 'salami', emoji: '🥩', name: 'Salama', kcal: 407, p: 22, f: 35, c: 1.9 },
+  { id: 'ham', emoji: '🥩', name: 'Šunka (kuhana)', kcal: 145, p: 21, f: 5, c: 3 },
+
+  // Proteini (suplementi)
+  { id: 'whey_generic', emoji: '💪', name: 'Whey protein (generički)', kcal: 400, p: 80, f: 8, c: 5 },
+  { id: 'casein', emoji: '💪', name: 'Kazein protein', kcal: 370, p: 80, f: 3, c: 6 },
+
+  // Povrće (keto-friendly)
+  { id: 'avocado', emoji: '🥑', name: 'Avokado', kcal: 160, p: 2, f: 15, c: 2 },
+  { id: 'spinach', emoji: '🥬', name: 'Španjat', kcal: 23, p: 2.9, f: 0.4, c: 1.4 },
+  { id: 'broccoli', emoji: '🥦', name: 'Brokula', kcal: 34, p: 2.8, f: 0.4, c: 4.2 },
+  { id: 'cauliflower', emoji: '🥦', name: 'Karfiol', kcal: 25, p: 1.9, f: 0.3, c: 5 },
+  { id: 'zucchini', emoji: '🥒', name: 'Tikvice', kcal: 17, p: 1.2, f: 0.3, c: 3.1 },
+  { id: 'tomato', emoji: '🍅', name: 'Paradajz', kcal: 18, p: 0.9, f: 0.2, c: 3.9 },
+  { id: 'cucumber', emoji: '🥒', name: 'Krastavac', kcal: 15, p: 0.7, f: 0.1, c: 3.6 },
+  { id: 'pepper', emoji: '🫑', name: 'Paprika', kcal: 31, p: 1, f: 0.3, c: 6 },
+  { id: 'onion', emoji: '🧅', name: 'Luk', kcal: 40, p: 1.1, f: 0.1, c: 9.3 },
+  { id: 'garlic', emoji: '🧄', name: 'Bijeli luk', kcal: 149, p: 6.4, f: 0.5, c: 33 },
+  { id: 'lettuce', emoji: '🥬', name: 'Zelena salata', kcal: 15, p: 1.4, f: 0.2, c: 2.9 },
+  { id: 'cabbage', emoji: '🥬', name: 'Kupus', kcal: 25, p: 1.3, f: 0.1, c: 5.8 },
+  { id: 'mushroom', emoji: '🍄', name: 'Šampinjoni', kcal: 22, p: 3.1, f: 0.3, c: 3.3 },
+  { id: 'asparagus', emoji: '🌿', name: 'Šparoga', kcal: 20, p: 2.2, f: 0.1, c: 3.9 },
+  { id: 'green_beans', emoji: '🫘', name: 'Mahune', kcal: 31, p: 1.8, f: 0.1, c: 7 },
+
+  // Voće
+  { id: 'banana', emoji: '🍌', name: 'Banana', kcal: 89, p: 1.1, f: 0.3, c: 23 },
+  { id: 'apple', emoji: '🍎', name: 'Jabuka', kcal: 52, p: 0.3, f: 0.2, c: 14 },
+  { id: 'blueberry', emoji: '🫐', name: 'Borovnice', kcal: 57, p: 0.7, f: 0.3, c: 14 },
+  { id: 'strawberry', emoji: '🍓', name: 'Jagode', kcal: 32, p: 0.7, f: 0.3, c: 7.7 },
+  { id: 'lemon', emoji: '🍋', name: 'Limun (sok)', kcal: 29, p: 1.1, f: 0.3, c: 9.3 },
+  { id: 'orange', emoji: '🍊', name: 'Narandža', kcal: 47, p: 0.9, f: 0.1, c: 12 },
+
+  // Ugljikohidrati
+  { id: 'rice', emoji: '🍚', name: 'Bijeli riža (kuhana)', kcal: 130, p: 2.7, f: 0.3, c: 28 },
+  { id: 'rice_brown', emoji: '🍚', name: 'Smeđa riža (kuhana)', kcal: 112, p: 2.6, f: 0.9, c: 23 },
+  { id: 'oats', emoji: '🥣', name: 'Zobene pahuljice', kcal: 389, p: 17, f: 7, c: 66 },
+  { id: 'bread', emoji: '🍞', name: 'Bijeli hljeb', kcal: 265, p: 9, f: 3.2, c: 49 },
+  { id: 'bread_ww', emoji: '🍞', name: 'Hljeb od cjelovitog žita', kcal: 247, p: 13, f: 4.2, c: 41 },
+  { id: 'pasta', emoji: '🍝', name: 'Tjestenina (kuhana)', kcal: 158, p: 5.8, f: 0.9, c: 31 },
+  { id: 'potato', emoji: '🥔', name: 'Krompir (kuhani)', kcal: 87, p: 1.9, f: 0.1, c: 20 },
+  { id: 'sweet_potato', emoji: '🍠', name: 'Slatki krompir (kuhani)', kcal: 86, p: 1.6, f: 0.1, c: 20 },
+  { id: 'tortilla', emoji: '🫓', name: 'Tortilla (pšenična)', kcal: 218, p: 5.7, f: 5.5, c: 36 },
+
+  // Masti & Orasi
+  { id: 'olive_oil', emoji: '🫒', name: 'Maslinovo ulje', kcal: 884, p: 0, f: 100, c: 0 },
+  { id: 'coconut_oil', emoji: '🥥', name: 'Kokosovo ulje', kcal: 892, p: 0, f: 100, c: 0 },
+  { id: 'almond', emoji: '🥜', name: 'Bademi', kcal: 579, p: 21, f: 50, c: 10 },
+  { id: 'walnut', emoji: '🌰', name: 'Orasi', kcal: 654, p: 15, f: 65, c: 7 },
+  { id: 'peanut_butter', emoji: '🥜', name: 'Kikiriki maslac', kcal: 588, p: 25, f: 50, c: 20 },
+  { id: 'peanut', emoji: '🥜', name: 'Kikiriki', kcal: 567, p: 26, f: 49, c: 16 },
+  { id: 'sunflower_seeds', emoji: '🌻', name: 'Suncokretove sjemenke', kcal: 584, p: 21, f: 51, c: 20 },
+
+  // Pića
+  { id: 'coffee', emoji: '☕', name: 'Kafa (crna)', kcal: 2, p: 0.3, f: 0, c: 0 },
+  { id: 'coffee_milk', emoji: '☕', name: 'Kafa s mlijekom', kcal: 25, p: 1.2, f: 1.2, c: 2 },
+  { id: 'water', emoji: '💧', name: 'Voda', kcal: 0, p: 0, f: 0, c: 0 },
+  { id: 'protein_shake', emoji: '🥤', name: 'Protein shake (mlijeko+whey)', kcal: 200, p: 28, f: 4, c: 10 },
+
+  // Začini & Umaci
+  { id: 'ketchup', emoji: '🍅', name: 'Ketchup', kcal: 112, p: 1.4, f: 0.2, c: 27 },
+  { id: 'mayo', emoji: '🫙', name: 'Majonez', kcal: 680, p: 1, f: 75, c: 1.5 },
+  { id: 'mustard', emoji: '🫙', name: 'Senf', kcal: 66, p: 4, f: 4, c: 5 },
+];
+
+// =====================
+// STATE
+// =====================
+let selectedFood = null;
+let selectedMealTime = null;
+let todayLog = [];
+let allLog = {};
+let calorieGoal = 2000;
+
+const todayKey = () => new Date().toISOString().split('T')[0];
+
+function loadData() {
+  const saved = localStorage.getItem('tracker_log');
+  if (saved) allLog = JSON.parse(saved);
+  todayLog = allLog[todayKey()] || [];
+  calorieGoal = parseInt(localStorage.getItem('tracker_goal') || '2000');
+  document.getElementById('goalInput').value = calorieGoal;
+  const w = localStorage.getItem('tracker_weight');
+  if (w) document.getElementById('weightInput').value = w;
+}
+
+function saveData() {
+  allLog[todayKey()] = todayLog;
+  localStorage.setItem('tracker_log', JSON.stringify(allLog));
+}
+
+// =====================
+// UI
+// =====================
+function updateHeader() {
+  const now = new Date();
+  const days = ['Nedjelja','Ponedjeljak','Utorak','Srijeda','Četvrtak','Petak','Subota'];
+  const months = ['Jan','Feb','Mar','Apr','Maj','Jun','Jul','Aug','Sep','Okt','Nov','Dec'];
+  document.getElementById('headerDate').textContent = 
+    `${days[now.getDay()]}, ${now.getDate()}. ${months[now.getMonth()]}`;
+}
+
+function updateTotals() {
+  const total = todayLog.reduce((a, e) => ({
+    kcal: a.kcal + e.kcal,
+    p: a.p + e.p,
+    f: a.f + e.f,
+    c: a.c + e.c
+  }), { kcal: 0, p: 0, f: 0, c: 0 });
+
+  document.getElementById('totalKcal').textContent = Math.round(total.kcal);
+  document.getElementById('totalProtein').textContent = Math.round(total.p) + 'g';
+  document.getElementById('totalFat').textContent = Math.round(total.f) + 'g';
+  document.getElementById('totalCarbs').textContent = Math.round(total.c) + 'g';
+  document.getElementById('dayScore').textContent = Math.round(total.kcal) + ' kcal';
+  document.getElementById('goalDisplay').textContent = calorieGoal;
+
+  // Ring
+  const pct = Math.min(total.kcal / calorieGoal, 1);
+  const circ = 232.5;
+  document.getElementById('ringFill').style.strokeDashoffset = circ - (circ * pct);
+}
+
+function renderFoodLog() {
+  const log = document.getElementById('foodLog');
+  if (todayLog.length === 0) {
+    log.innerHTML = `<div class="empty-state"><div class="emoji">🍽️</div><div>Još nisi dodao nijedan obrok.<br>Pritisni dugme iznad!</div></div>`;
+    return;
+  }
+
+  // Group by meal time
+  const groups = {};
+  todayLog.forEach((e, i) => {
+    const key = e.mealTime || 'Ostalo';
+    if (!groups[key]) groups[key] = [];
+    groups[key].push({ ...e, idx: i });
+  });
+
+  const mealOrder = ['Doručak','Ručak','Večera','Užina','Ostalo'];
+  let html = '';
+  mealOrder.forEach(meal => {
+    if (!groups[meal]) return;
+    html += `<div class="category-header">${meal}</div>`;
+    groups[meal].forEach(e => {
+      html += `
+        <div class="food-entry">
+          <div class="food-entry-icon">${e.emoji}</div>
+          <div class="food-entry-info">
+            <div class="food-entry-name">${e.name}</div>
+            <div class="food-entry-sub">${e.amount}g · P:${Math.round(e.p)}g · M:${Math.round(e.f)}g · UH:${Math.round(e.c)}g</div>
+          </div>
+          <div class="food-entry-kcal">${Math.round(e.kcal)}</div>
+          <button class="food-entry-del" onclick="removeFood(${e.idx})">×</button>
+        </div>`;
+    });
+  });
+  log.innerHTML = html;
+}
+
+function renderHistory() {
+  const hist = document.getElementById('historyLog');
+  const keys = Object.keys(allLog).sort().reverse();
+  const today = todayKey();
+  const past = keys.filter(k => k !== today);
+  
+  if (past.length === 0) {
+    hist.innerHTML = `<div class="empty-state"><div class="emoji">📅</div><div>Nema historije još uvijek.</div></div>`;
+    return;
+  }
+
+  let html = '';
+  past.slice(0, 30).forEach(date => {
+    const entries = allLog[date];
+    if (!entries || entries.length === 0) return;
+    const totalKcal = entries.reduce((a, e) => a + e.kcal, 0);
+    const d = new Date(date);
+    const months = ['Jan','Feb','Mar','Apr','Maj','Jun','Jul','Aug','Sep','Okt','Nov','Dec'];
+    const label = `${d.getDate()}. ${months[d.getMonth()]} ${d.getFullYear()}`;
+    
+    html += `
+      <div class="history-day">
+        <div class="history-day-header">
+          <div class="history-day-title">${label}</div>
+          <div class="history-day-kcal">${Math.round(totalKcal)} kcal</div>
+        </div>
+        <div class="history-card">
+          ${entries.map(e => `
+            <div class="food-entry" style="border-radius:0; border-left:none; border-right:none; border-top:none;">
+              <div class="food-entry-icon">${e.emoji}</div>
+              <div class="food-entry-info">
+                <div class="food-entry-name">${e.name}</div>
+                <div class="food-entry-sub">${e.mealTime || ''} · ${e.amount}g</div>
+              </div>
+              <div class="food-entry-kcal">${Math.round(e.kcal)}</div>
+            </div>`).join('')}
+        </div>
+      </div>`;
+  });
+  hist.innerHTML = html;
+}
+
+// =====================
+// ACTIONS
+// =====================
+function removeFood(idx) {
+  todayLog.splice(idx, 1);
+  saveData();
+  updateTotals();
+  renderFoodLog();
+  showToast('Obrisano ✓');
+}
+
+function addFood() {
+  const amount = parseFloat(document.getElementById('amountInput').value);
+  if (!selectedFood || !amount || amount <= 0) return;
+  
+  const ratio = amount / 100;
+  const entry = {
+    name: selectedFood.name,
+    emoji: selectedFood.emoji,
+    amount: amount,
+    mealTime: selectedMealTime,
+    kcal: selectedFood.kcal * ratio,
+    p: selectedFood.p * ratio,
+    f: selectedFood.f * ratio,
+    c: selectedFood.c * ratio,
+    time: new Date().toLocaleTimeString('bs', {hour:'2-digit', minute:'2-digit'}),
+    date: todayKey()
+  };
+  
+  todayLog.push(entry);
+  saveData();
+  updateTotals();
+  renderFoodLog();
+  closeModal();
+  showToast(`${selectedFood.name} dodano ✓`);
+}
+
+function saveGoal() {
+  calorieGoal = parseInt(document.getElementById('goalInput').value) || 2000;
+  localStorage.setItem('tracker_goal', calorieGoal);
+  updateTotals();
+  showToast('Cilj sačuvan ✓');
+}
+
+function saveWeight() {
+  const w = document.getElementById('weightInput').value;
+  localStorage.setItem('tracker_weight', w);
+  showToast('Težina sačuvana ✓');
+}
+
+function clearToday() {
+  if (confirm('Obrisati sve današnje unose?')) {
+    todayLog = [];
+    saveData();
+    updateTotals();
+    renderFoodLog();
+    showToast('Obrisano ✓');
+  }
+}
+
+function exportData() {
+  const blob = new Blob([JSON.stringify(allLog, null, 2)], {type:'application/json'});
+  const a = document.createElement('a');
+  a.href = URL.createObjectURL(blob);
+  a.download = `tracker_${todayKey()}.json`;
+  a.click();
+  showToast('Izvezeno ✓');
+}
+
+// =====================
+// MODAL
+// =====================
+function openModal() {
+  document.getElementById('modalOverlay').classList.add('open');
+  selectedFood = null;
+  selectedMealTime = null;
+  document.getElementById('foodSearch').value = '';
+  document.getElementById('amountSection').classList.remove('visible');
+  document.getElementById('confirmBtn').disabled = true;
+  document.querySelectorAll('.meal-time-btn').forEach(b => b.classList.remove('active'));
+  filterFoods();
+  setTimeout(() => document.getElementById('foodSearch').focus(), 300);
+}
+
+function closeModal() {
+  document.getElementById('modalOverlay').classList.remove('open');
+}
+
+function closeModalOnBg(e) {
+  if (e.target === document.getElementById('modalOverlay')) closeModal();
+}
+
+function selectFood(food) {
+  selectedFood = food;
+  document.querySelectorAll('.food-item').forEach(el => el.classList.remove('selected'));
+  document.getElementById('food-' + food.id)?.classList.add('selected');
+  document.getElementById('amountSection').classList.add('visible');
+  document.getElementById('selectedFoodName').textContent = food.emoji + ' ' + food.name;
+  document.getElementById('amountInput').value = 100;
+  updatePreview();
+  document.getElementById('confirmBtn').disabled = false;
+  document.getElementById('amountInput').focus();
+}
+
+function selectMealTime(btn, time) {
+  document.querySelectorAll('.meal-time-btn').forEach(b => b.classList.remove('active'));
+  btn.classList.add('active');
+  selectedMealTime = time;
+}
+
+function setAmount(val) {
+  document.getElementById('amountInput').value = val;
+  updatePreview();
+}
+
+function updatePreview() {
+  if (!selectedFood) return;
+  const amount = parseFloat(document.getElementById('amountInput').value) || 0;
+  const ratio = amount / 100;
+  document.getElementById('previewText').textContent = 
+    `→ ${Math.round(selectedFood.kcal * ratio)} kcal · P:${Math.round(selectedFood.p * ratio)}g · M:${Math.round(selectedFood.f * ratio)}g · UH:${Math.round(selectedFood.c * ratio)}g`;
+}
+
+function filterFoods() {
+  const q = document.getElementById('foodSearch').value.toLowerCase().trim();
+  const filtered = q ? FOODS.filter(f => f.name.toLowerCase().includes(q)) : FOODS;
+  
+  const list = document.getElementById('foodList');
+  list.innerHTML = filtered.map(f => `
+    <div class="food-item" id="food-${f.id}" onclick='selectFood(${JSON.stringify(f)})'>
+      <div class="food-item-emoji">${f.emoji}</div>
+      <div class="food-item-info">
+        <div class="food-item-name">${f.name}</div>
+        <div class="food-item-macros">P:${f.p}g · M:${f.f}g · UH:${f.c}g na 100g</div>
+      </div>
+      <div class="food-item-kcal">${f.kcal} kcal</div>
+    </div>`).join('');
+}
+
+// =====================
+// NAVIGATION
+// =====================
+function switchNav(page) {
+  document.querySelectorAll('.section').forEach(s => s.classList.remove('active'));
+  document.querySelectorAll('.nav-item, .tab').forEach(n => n.classList.remove('active'));
+  document.getElementById('sec-' + page).classList.add('active');
+  document.getElementById('nav-' + page)?.classList.add('active');
+  document.querySelectorAll('.tab').forEach(t => {
+    if (t.getAttribute('onclick')?.includes("'" + page + "'")) t.classList.add('active');
+  });
+  if (page === 'history') renderHistory();
+  if (page === 'journal') { renderJournalToday(); renderJournalHistory('all'); }
+}
+
+// =====================
+// TOAST
+// =====================
+function showToast(msg) {
+  const t = document.getElementById('toast');
+  t.textContent = msg;
+  t.classList.add('show');
+  setTimeout(() => t.classList.remove('show'), 2000);
+}
+
+// =====================
+// JOURNAL
+// =====================
+let journalLog = {};
+let selectedMoodVal = null;
+let selectedTags = [];
+let recognition = null;
+let isListening = false;
+let voiceLang = 'sr-RS';
+
+function loadJournal() {
+  const saved = localStorage.getItem('tracker_journal');
+  if (saved) journalLog = JSON.parse(saved);
+}
+
+function saveJournal() {
+  localStorage.setItem('tracker_journal', JSON.stringify(journalLog));
+}
+
+function selectMood(btn, mood) {
+  document.querySelectorAll('.mood-btn').forEach(b => b.classList.remove('active'));
+  btn.classList.add('active');
+  selectedMoodVal = mood;
+}
+
+function toggleTag(btn, tag) {
+  btn.classList.toggle('active');
+  if (selectedTags.includes(tag)) {
+    selectedTags = selectedTags.filter(t => t !== tag);
+  } else {
+    selectedTags.push(tag);
+  }
+}
+
+function saveJournalEntry() {
+  const text = document.getElementById('journalText').value.trim();
+  if (!text) { showToast('Napiši nešto prvo!'); return; }
+
+  const entry = {
+    id: Date.now(),
+    text,
+    mood: selectedMoodVal,
+    tags: [...selectedTags],
+    time: new Date().toLocaleTimeString('bs', {hour:'2-digit', minute:'2-digit'}),
+    date: todayKey(),
+    datetime: new Date().toISOString()
+  };
+
+  if (!journalLog[todayKey()]) journalLog[todayKey()] = [];
+  journalLog[todayKey()].unshift(entry);
+  saveJournal();
+
+  // Reset form
+  document.getElementById('journalText').value = '';
+  selectedMoodVal = null;
+  selectedTags = [];
+  document.querySelectorAll('.mood-btn, .journal-tag').forEach(b => b.classList.remove('active'));
+
+  renderJournalToday();
+  renderJournalHistory('all');
+  showToast('Unos sačuvan ✓');
+}
+
+function deleteJournalEntry(date, id) {
+  if (!journalLog[date]) return;
+  journalLog[date] = journalLog[date].filter(e => e.id !== id);
+  if (journalLog[date].length === 0) delete journalLog[date];
+  saveJournal();
+  renderJournalToday();
+  renderJournalHistory('all');
+  showToast('Obrisano ✓');
+}
+
+function renderJournalEntry(e, showDel = true) {
+  const tagHtml = e.tags && e.tags.length
+    ? e.tags.map(t => `<span class="journal-entry-tag ${t}">${t}</span>`).join('')
+    : '';
+  const delBtn = showDel
+    ? `<button class="journal-entry-del" onclick="deleteJournalEntry('${e.date}', ${e.id})">×</button>`
+    : '';
+  return `
+    <div class="journal-entry">
+      ${delBtn}
+      <div class="journal-entry-header">
+        <div class="journal-entry-meta">
+          <div class="journal-entry-time">${e.time || ''}</div>
+          <div class="journal-entry-tags">${tagHtml}</div>
+        </div>
+        <div class="journal-entry-mood">${e.mood || ''}</div>
+      </div>
+      <div class="journal-entry-text">${e.text}</div>
+    </div>`;
+}
+
+function renderJournalToday() {
+  const el = document.getElementById('journalTodayEntries');
+  const entries = journalLog[todayKey()] || [];
+  if (entries.length === 0) {
+    el.innerHTML = `<div class="empty-state"><div class="emoji">📓</div><div>Nema unosa za danas.<br>Napiši ili izgovori nešto!</div></div>`;
+    return;
+  }
+  el.innerHTML = entries.map(e => renderJournalEntry(e, true)).join('');
+}
+
+function renderJournalHistory(filterTag) {
+  const el = document.getElementById('journalHistoryEntries');
+  const today = todayKey();
+  const keys = Object.keys(journalLog).filter(k => k !== today).sort().reverse();
+
+  if (keys.length === 0) {
+    el.innerHTML = `<div class="empty-state" style="padding:20px 0;"><div style="color:var(--text-dim); font-size:14px;">Nema prethodnih unosa.</div></div>`;
+    return;
+  }
+
+  const months = ['Jan','Feb','Mar','Apr','Maj','Jun','Jul','Aug','Sep','Okt','Nov','Dec'];
+  const days = ['Ned','Pon','Uto','Sri','Čet','Pet','Sub'];
+
+  let html = '';
+  keys.forEach(date => {
+    let entries = journalLog[date] || [];
+    if (filterTag !== 'all') entries = entries.filter(e => e.tags && e.tags.includes(filterTag));
+    if (entries.length === 0) return;
+    const d = new Date(date);
+    const label = `${days[d.getDay()]}, ${d.getDate()}. ${months[d.getMonth()]}`;
+    html += `
+      <div class="journal-date-group">
+        <div class="journal-date-label">${label}</div>
+        ${entries.map(e => renderJournalEntry(e, false)).join('')}
+      </div>`;
+  });
+  el.innerHTML = html || `<div style="color:var(--text-dim); font-size:14px; padding:10px 0;">Nema unosa za ovaj filter.</div>`;
+}
+
+function filterJournal(btn, tag) {
+  document.querySelectorAll('.jfilter-btn').forEach(b => b.classList.remove('active'));
+  btn.classList.add('active');
+  renderJournalHistory(tag);
+}
+
+function updateJournalTime() {
+  const el = document.getElementById('journalCurrentTime');
+  if (el) el.textContent = new Date().toLocaleTimeString('bs', {hour:'2-digit', minute:'2-digit'});
+}
+
+// =====================
+// VOICE RECOGNITION
+// =====================
+function toggleLang() {
+  voiceLang = voiceLang === 'sr-RS' ? 'en-US' : 'sr-RS';
+  const btn = document.getElementById('langToggle');
+  const label = document.getElementById('micLangLabel');
+  if (voiceLang === 'sr-RS') {
+    btn.textContent = 'SR 🇷🇸';
+    btn.className = 'mic-lang-toggle sr';
+    label.textContent = 'SR';
+  } else {
+    btn.textContent = 'EN 🇺🇸';
+    btn.className = 'mic-lang-toggle en';
+    label.textContent = 'EN';
+  }
+  if (isListening) stopVoice();
+}
+
+function toggleVoice() {
+  if (isListening) {
+    stopVoice();
+  } else {
+    startVoice();
+  }
+}
+
+function startVoice() {
+  const SpeechRecognition = window.SpeechRecognition || window.webkitSpeechRecognition;
+  if (!SpeechRecognition) {
+    showToast('Glasovni unos nije podržan u ovom browseru');
+    document.getElementById('voiceStatus').textContent = '⚠️ Nije podržano — koristi Chrome';
+    return;
+  }
+
+  recognition = new SpeechRecognition();
+  recognition.lang = voiceLang;
+  recognition.continuous = true;
+  recognition.interimResults = true;
+
+  const textarea = document.getElementById('journalText');
+  const status = document.getElementById('voiceStatus');
+  const micBtn = document.getElementById('micBtn');
+
+  let finalTranscript = textarea.value;
+  const baseText = finalTranscript;
+
+  recognition.onstart = () => {
+    isListening = true;
+    micBtn.classList.add('listening');
+    micBtn.innerHTML = '⏹️<span class="mic-lang" id="micLangLabel">' + (voiceLang === 'sr-RS' ? 'SR' : 'EN') + '</span>';
+    status.textContent = '🎙️ Slušam... govori';
+  };
+
+  recognition.onresult = (e) => {
+    let interim = '';
+    let final = '';
+    for (let i = e.resultIndex; i < e.results.length; i++) {
+      if (e.results[i].isFinal) {
+        final += e.results[i][0].transcript;
+      } else {
+        interim += e.results[i][0].transcript;
+      }
+    }
+    if (final) finalTranscript = baseText + (baseText ? ' ' : '') + final;
+    textarea.value = finalTranscript + (interim ? ' ' + interim : '');
+    status.textContent = interim ? `💬 "${interim}"` : '🎙️ Slušam...';
+  };
+
+  recognition.onerror = (e) => {
+    status.textContent = e.error === 'not-allowed'
+      ? '⚠️ Dozvoli mikrofon u browseru'
+      : `⚠️ Greška: ${e.error}`;
+    stopVoice();
+  };
+
+  recognition.onend = () => {
+    if (isListening) recognition.start(); // keep going
+  };
+
+  recognition.start();
+}
+
+function stopVoice() {
+  isListening = false;
+  if (recognition) recognition.stop();
+  const micBtn = document.getElementById('micBtn');
+  micBtn.classList.remove('listening');
+  micBtn.innerHTML = '🎙️<span class="mic-lang" id="micLangLabel">' + (voiceLang === 'sr-RS' ? 'SR' : 'EN') + '</span>';
+  document.getElementById('voiceStatus').textContent = '';
+}
+
+// =====================
+// INIT
+// =====================
+loadData();
+loadJournal();
+updateHeader();
+updateTotals();
+renderFoodLog();
+filterFoods();
+renderJournalToday();
+renderJournalHistory('all');
+setInterval(updateJournalTime, 1000);
+updateJournalTime();
+</script>
+
+<script>
+if ('serviceWorker' in navigator) {
+  window.addEventListener('load', () => {
+    navigator.serviceWorker.register('sw.js').catch(() => {});
+  });
+}
+</script>
+</body>
+</html>
