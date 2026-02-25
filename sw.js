@@ -3,8 +3,8 @@ const ASSETS = [
   '/tracker/',
   '/tracker/index.html',
   '/tracker/manifest.json',
-  '/tracker/icon-192.png',
-  '/tracker/icon-512.png'
+  '/tracker/icon-192_v2.png',
+  '/tracker/icon-512_v2.png'
 ];
 
 self.addEventListener('install', e => {
