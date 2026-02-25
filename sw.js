@@ -3,8 +3,8 @@ const ASSETS = [
   '/test_app_tracker_v1/',
   '/test_app_tracker_v1/index.html',
   '/test_app_tracker_v1/manifest.json',
-  '/test_app_tracker_v1/icon-192_v1.png',
-  '/test_app_tracker_v1/icon-512_v1.png'
+  '/test_app_tracker_v1/icon-192_v2.png',
+  '/test_app_tracker_v1/icon-512_v2.png'
 ];
 
 self.addEventListener('install', e => {
