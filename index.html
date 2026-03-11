@@ -1148,6 +1148,175 @@
     font-size: 13px;
     padding: 20px 0;
   }
+
+  /* WEIGHT CARD */
+  .weight-hero {
+    background: var(--surface);
+    border: 1px solid var(--border);
+    border-radius: var(--radius);
+    padding: 20px;
+    margin-bottom: 16px;
+    display: flex;
+    align-items: center;
+    gap: 20px;
+  }
+  .weight-hero-left { flex: 1; }
+  .weight-hero-current {
+    font-family: 'Syne', sans-serif;
+    font-size: 42px;
+    font-weight: 800;
+    color: var(--accent);
+    line-height: 1;
+  }
+  .weight-hero-unit { font-size: 18px; color: var(--text-muted); }
+  .weight-hero-sub { font-size: 12px; color: var(--text-muted); margin-top: 4px; }
+  .weight-hero-diff {
+    font-family: 'Syne', sans-serif;
+    font-size: 16px; font-weight: 700;
+    margin-top: 6px;
+  }
+  .weight-hero-diff.down { color: var(--accent); }
+  .weight-hero-diff.up { color: var(--red); }
+  .weight-hero-right { text-align: right; }
+  .weight-goal-badge {
+    background: var(--accent-dim);
+    border: 1px solid var(--accent);
+    border-radius: var(--radius-sm);
+    padding: 8px 12px;
+    font-size: 12px; color: var(--accent);
+    font-weight: 600;
+  }
+
+  /* CUSTOM FOOD MODAL */
+  .custom-food-toggle {
+    width: 100%;
+    padding: 11px;
+    background: none;
+    border: 1px solid var(--border);
+    border-radius: var(--radius-sm);
+    color: var(--text-muted);
+    font-size: 13px;
+    cursor: pointer;
+    margin-bottom: 12px;
+    display: flex; align-items: center; justify-content: center; gap: 6px;
+    transition: all 0.2s;
+  }
+  .custom-food-toggle:active { border-color: var(--accent); color: var(--accent); }
+  .custom-food-form {
+    background: var(--surface2);
+    border-radius: var(--radius-sm);
+    padding: 14px;
+    margin-bottom: 12px;
+    display: none;
+    border: 1px solid var(--border);
+  }
+  .custom-food-form.open { display: block; }
+  .custom-food-row {
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    gap: 8px;
+    margin-bottom: 8px;
+  }
+  .custom-food-input {
+    padding: 10px 12px;
+    background: var(--surface);
+    border: 1px solid var(--border);
+    border-radius: var(--radius-sm);
+    color: var(--text);
+    font-size: 14px;
+    font-family: 'DM Sans', sans-serif;
+    outline: none;
+    transition: border-color 0.2s;
+  }
+  .custom-food-input.full { grid-column: 1 / -1; }
+  .custom-food-input:focus { border-color: var(--accent); }
+  .custom-food-input::placeholder { color: var(--text-dim); }
+  .custom-food-save-btn {
+    width: 100%;
+    padding: 11px;
+    background: var(--accent);
+    border: none;
+    border-radius: var(--radius-sm);
+    color: #000;
+    font-family: 'Syne', sans-serif;
+    font-weight: 800;
+    font-size: 14px;
+    cursor: pointer;
+    margin-top: 4px;
+  }
+  .custom-food-badge {
+    font-size: 9px;
+    background: var(--accent);
+    color: #000;
+    border-radius: 3px;
+    padding: 1px 4px;
+    font-weight: 700;
+    vertical-align: middle;
+    margin-left: 4px;
+  }
+  .food-item-del {
+    background: none; border: none;
+    color: var(--text-dim); font-size: 16px;
+    cursor: pointer; padding: 4px; flex-shrink: 0;
+    transition: color 0.2s;
+  }
+  .food-item-del:active { color: var(--red); }
+
+  /* NOTIFICATIONS */
+  .notif-card {
+    background: var(--surface);
+    border: 1px solid var(--border);
+    border-radius: var(--radius);
+    overflow: hidden;
+    margin-bottom: 16px;
+  }
+  .notif-item {
+    display: flex; align-items: center;
+    padding: 14px 16px;
+    gap: 14px;
+    border-bottom: 1px solid var(--border);
+  }
+  .notif-item:last-child { border-bottom: none; }
+  .notif-icon { font-size: 20px; width: 28px; text-align: center; flex-shrink: 0; }
+  .notif-info { flex: 1; }
+  .notif-label { font-size: 14px; font-weight: 500; }
+  .notif-sub { font-size: 12px; color: var(--text-muted); margin-top: 2px; }
+  .notif-time-input {
+    background: var(--surface2);
+    border: 1px solid var(--border);
+    border-radius: 8px;
+    color: var(--text);
+    font-size: 14px;
+    font-family: 'Syne', sans-serif;
+    font-weight: 700;
+    padding: 6px 8px;
+    outline: none;
+    width: 80px;
+    text-align: center;
+  }
+  .notif-time-input:focus { border-color: var(--accent); }
+  .toggle-switch {
+    position: relative; width: 44px; height: 24px; flex-shrink: 0;
+  }
+  .toggle-switch input { opacity: 0; width: 0; height: 0; }
+  .toggle-slider {
+    position: absolute; inset: 0;
+    background: var(--border);
+    border-radius: 12px;
+    cursor: pointer;
+    transition: 0.3s;
+  }
+  .toggle-slider:before {
+    content: '';
+    position: absolute;
+    width: 18px; height: 18px;
+    left: 3px; top: 3px;
+    background: #fff;
+    border-radius: 50%;
+    transition: 0.3s;
+  }
+  .toggle-switch input:checked + .toggle-slider { background: var(--accent); }
+  .toggle-switch input:checked + .toggle-slider:before { transform: translateX(20px); background: #000; }
 </style>
 </head>
 <body>
@@ -1248,11 +1417,24 @@
     <div class="no-data-msg" id="macroNoData" style="display:none">Nema dovoljno podataka još.</div>
   </div>
 
-  <!-- WEIGHT CHART -->
+  <!-- WEIGHT TRACKING -->
   <div class="chart-wrap">
     <div class="chart-title">⚖️ Težina</div>
+    <div class="weight-hero" id="weightHeroCard">
+      <div class="weight-hero-left">
+        <div>
+          <span class="weight-hero-current" id="weightHeroCurrent">--</span>
+          <span class="weight-hero-unit">kg</span>
+        </div>
+        <div class="weight-hero-sub">Posljednji unos</div>
+        <div class="weight-hero-diff" id="weightHeroDiff"></div>
+      </div>
+      <div class="weight-hero-right">
+        <div class="weight-goal-badge" id="weightGoalBadge">Cilj: -- kg</div>
+      </div>
+    </div>
     <canvas id="weightChart" height="140"></canvas>
-    <div class="no-data-msg" id="weightNoData" style="display:none">Nema unesene težine još.</div>
+    <div class="no-data-msg" id="weightNoData">Upiši prvu težinu ispod 👇</div>
     <div class="weight-input-row">
       <input type="number" class="weight-input-field" id="weightStatInput" placeholder="npr. 99.5" step="0.1">
       <button class="weight-save-btn" onclick="logWeight()">+ Upiši</button>
@@ -1424,12 +1606,61 @@
     <div class="settings-item">
       <div class="settings-item-icon">⚖️</div>
       <div class="settings-item-info">
-        <div class="settings-item-label">Težina</div>
-        <div class="settings-item-sub">Trenutna težina u kg</div>
+        <div class="settings-item-label">Trenutna težina</div>
+        <div class="settings-item-sub">Početna / referentna težina</div>
       </div>
-      <input type="number" class="settings-input" id="weightInput" placeholder="75" onchange="saveWeight()">
+      <input type="number" class="settings-input" id="weightInput" placeholder="99" onchange="saveWeight()">
+    </div>
+    <div class="settings-item">
+      <div class="settings-item-icon">🏁</div>
+      <div class="settings-item-info">
+        <div class="settings-item-label">Ciljna težina</div>
+        <div class="settings-item-sub">Koliko želiš biti</div>
+      </div>
+      <input type="number" class="settings-input" id="weightGoalInput" placeholder="85" onchange="saveWeightGoal()">
     </div>
   </div>
+
+  <div class="section-title">Notifikacije</div>
+  <div class="notif-card">
+    <div class="notif-item">
+      <div class="notif-icon">🌅</div>
+      <div class="notif-info">
+        <div class="notif-label">Jutarnji podsjetnik</div>
+        <div class="notif-sub">Počni dan — čekiraj navike</div>
+      </div>
+      <input type="time" class="notif-time-input" id="notifMorningTime" value="07:00">
+      <label class="toggle-switch">
+        <input type="checkbox" id="notifMorningOn" onchange="saveNotifSettings()">
+        <span class="toggle-slider"></span>
+      </label>
+    </div>
+    <div class="notif-item">
+      <div class="notif-icon">🌙</div>
+      <div class="notif-info">
+        <div class="notif-label">Večernji podsjetnik</div>
+        <div class="notif-sub">Završi dan — jesi li sve radio?</div>
+      </div>
+      <input type="time" class="notif-time-input" id="notifEveningTime" value="21:00">
+      <label class="toggle-switch">
+        <input type="checkbox" id="notifEveningOn" onchange="saveNotifSettings()">
+        <span class="toggle-slider"></span>
+      </label>
+    </div>
+    <div class="notif-item">
+      <div class="notif-icon">🍽️</div>
+      <div class="notif-info">
+        <div class="notif-label">Podsjetnik za hranu</div>
+        <div class="notif-sub">Ako nisi logirao obrok do podne</div>
+      </div>
+      <input type="time" class="notif-time-input" id="notifFoodTime" value="12:00">
+      <label class="toggle-switch">
+        <input type="checkbox" id="notifFoodOn" onchange="saveNotifSettings()">
+        <span class="toggle-slider"></span>
+      </label>
+    </div>
+  </div>
+  <button class="export-btn" onclick="requestNotifPermission()" id="notifPermBtn">🔔 Aktiviraj notifikacije</button>
 
   <div class="section-title">Podaci</div>
   <button class="export-btn" onclick="exportData()">📤 Izvezi podatke (JSON)</button>
@@ -1479,6 +1710,25 @@
     <div class="search-wrap">
       <span class="search-icon">🔍</span>
       <input type="text" class="search-input" id="foodSearch" placeholder="Pretraži namirnice..." oninput="filterFoods()">
+    </div>
+
+    <!-- CUSTOM FOOD -->
+    <button class="custom-food-toggle" onclick="toggleCustomFoodForm()">
+      <span>✏️</span> Dodaj vlastitu namirnicu
+    </button>
+    <div class="custom-food-form" id="customFoodForm">
+      <div class="custom-food-row">
+        <input type="text" class="custom-food-input full" id="cfName" placeholder="Naziv namirnice">
+      </div>
+      <div class="custom-food-row">
+        <input type="number" class="custom-food-input" id="cfKcal" placeholder="kcal / 100g">
+        <input type="number" class="custom-food-input" id="cfProtein" placeholder="Proteini (g)">
+      </div>
+      <div class="custom-food-row">
+        <input type="number" class="custom-food-input" id="cfFat" placeholder="Masti (g)">
+        <input type="number" class="custom-food-input" id="cfCarbs" placeholder="UH (g)">
+      </div>
+      <button class="custom-food-save-btn" onclick="saveCustomFood()">Sačuvaj namirnicu</button>
     </div>
 
     <div class="amount-section" id="amountSection">
@@ -1635,6 +1885,10 @@ function loadData() {
   document.getElementById('goalInput').value = calorieGoal;
   const w = localStorage.getItem('tracker_weight');
   if (w) document.getElementById('weightInput').value = w;
+  const wg = localStorage.getItem('tracker_weight_goal');
+  if (wg) document.getElementById('weightGoalInput').value = wg;
+  loadCustomFoods();
+  loadNotifSettings();
 }
 
 function saveData() {
@@ -1802,6 +2056,13 @@ function saveWeight() {
   showToast('Težina sačuvana ✓');
 }
 
+function saveWeightGoal() {
+  const wg = document.getElementById('weightGoalInput').value;
+  localStorage.setItem('tracker_weight_goal', wg);
+  updateWeightHero();
+  showToast('Cilj sačuvan ✓');
+}
+
 function clearToday() {
   if (confirm('Obrisati sve današnje unose?')) {
     todayLog = [];
@@ -1875,19 +2136,76 @@ function updatePreview() {
     `→ ${Math.round(selectedFood.kcal * ratio)} kcal · P:${Math.round(selectedFood.p * ratio)}g · M:${Math.round(selectedFood.f * ratio)}g · UH:${Math.round(selectedFood.c * ratio)}g`;
 }
 
+// =====================
+// CUSTOM FOODS
+// =====================
+let customFoods = [];
+
+function loadCustomFoods() {
+  const saved = localStorage.getItem('tracker_custom_foods');
+  if (saved) customFoods = JSON.parse(saved);
+}
+
+function saveCustomFoods() {
+  localStorage.setItem('tracker_custom_foods', JSON.stringify(customFoods));
+}
+
+function getAllFoods() {
+  return [...customFoods, ...FOODS];
+}
+
+function toggleCustomFoodForm() {
+  const form = document.getElementById('customFoodForm');
+  form.classList.toggle('open');
+}
+
+function saveCustomFood() {
+  const name = document.getElementById('cfName').value.trim();
+  const kcal = parseFloat(document.getElementById('cfKcal').value);
+  const p    = parseFloat(document.getElementById('cfProtein').value) || 0;
+  const f    = parseFloat(document.getElementById('cfFat').value) || 0;
+  const c    = parseFloat(document.getElementById('cfCarbs').value) || 0;
+
+  if (!name) { showToast('Upiši naziv!'); return; }
+  if (!kcal || kcal <= 0) { showToast('Upiši kalorije!'); return; }
+
+  const id = 'cf_' + Date.now();
+  customFoods.unshift({ id, emoji: '🍴', name, kcal, p, f, c, custom: true });
+  saveCustomFoods();
+
+  // Clear form
+  ['cfName','cfKcal','cfProtein','cfFat','cfCarbs'].forEach(id => document.getElementById(id).value = '');
+  document.getElementById('customFoodForm').classList.remove('open');
+  filterFoods();
+  showToast(`"${name}" dodano ✓`);
+}
+
+function deleteCustomFood(id, e) {
+  e.stopPropagation();
+  if (!confirm('Obrisati ovu namirnicu?')) return;
+  customFoods = customFoods.filter(f => f.id !== id);
+  saveCustomFoods();
+  filterFoods();
+  showToast('Obrisano ✓');
+}
+
 function filterFoods() {
   const q = document.getElementById('foodSearch').value.toLowerCase().trim();
-  const filtered = q ? FOODS.filter(f => f.name.toLowerCase().includes(q)) : FOODS;
-  
+  const all = getAllFoods();
+  const filtered = q ? all.filter(f => f.name.toLowerCase().includes(q)) : all;
+
   const list = document.getElementById('foodList');
   list.innerHTML = filtered.map(f => `
     <div class="food-item" id="food-${f.id}" onclick='selectFood(${JSON.stringify(f)})'>
       <div class="food-item-emoji">${f.emoji}</div>
       <div class="food-item-info">
-        <div class="food-item-name">${f.name}</div>
+        <div class="food-item-name">${f.name}${f.custom ? '<span class="custom-food-badge">MOJE</span>' : ''}</div>
         <div class="food-item-macros">P:${f.p}g · M:${f.f}g · UH:${f.c}g na 100g</div>
       </div>
-      <div class="food-item-kcal">${f.kcal} kcal</div>
+      <div style="display:flex;align-items:center;gap:6px">
+        <div class="food-item-kcal">${f.kcal} kcal</div>
+        ${f.custom ? `<button class="food-item-del" onclick="deleteCustomFood('${f.id}', event)">×</button>` : ''}
+      </div>
     </div>`).join('');
 }
 
@@ -2159,11 +2477,11 @@ function logWeight() {
   const val = parseFloat(document.getElementById('weightStatInput').value);
   if (!val || val < 20 || val > 300) { showToast('Upiši validnu težinu'); return; }
   weightLog[todayKey()] = val;
-  // Also update settings weight
   document.getElementById('weightInput').value = val;
   localStorage.setItem('tracker_weight', val);
   saveWeightLog();
   document.getElementById('weightStatInput').value = '';
+  updateWeightHero();
   renderStats();
   showToast(`${val} kg upisano ✓`);
 }
@@ -2802,6 +3120,155 @@ function switchNav(page) {
 }
 
 // =====================
+// WEIGHT HERO
+// =====================
+function updateWeightHero() {
+  const entries = Object.entries(weightLog).sort((a,b) => a[0].localeCompare(b[0]));
+  const goal = parseFloat(localStorage.getItem('tracker_weight_goal'));
+  const goalBadge = document.getElementById('weightGoalBadge');
+
+  if (goalBadge) goalBadge.textContent = goal ? `Cilj: ${goal} kg` : 'Cilj: nije set';
+
+  if (entries.length === 0) {
+    document.getElementById('weightHeroCurrent').textContent = '--';
+    document.getElementById('weightHeroDiff').textContent = '';
+    return;
+  }
+
+  const latest = entries[entries.length - 1][1];
+  document.getElementById('weightHeroCurrent').textContent = latest.toFixed(1);
+
+  if (entries.length >= 2) {
+    const prev = entries[entries.length - 2][1];
+    const diff = latest - prev;
+    const el = document.getElementById('weightHeroDiff');
+    if (diff < 0) {
+      el.textContent = `▼ ${Math.abs(diff).toFixed(1)} kg od zadnjeg`;
+      el.className = 'weight-hero-diff down';
+    } else if (diff > 0) {
+      el.textContent = `▲ ${diff.toFixed(1)} kg od zadnjeg`;
+      el.className = 'weight-hero-diff up';
+    } else {
+      el.textContent = 'Isti kao zadnji unos';
+      el.className = 'weight-hero-diff';
+    }
+  }
+
+  // vs start weight
+  if (entries.length >= 2) {
+    const first = entries[0][1];
+    const totalDiff = latest - first;
+    const sub = document.getElementById('weightHeroCard').querySelector('.weight-hero-sub');
+    if (sub) {
+      const totalStr = totalDiff < 0
+        ? `📉 ${Math.abs(totalDiff).toFixed(1)} kg izgubljeno ukupno`
+        : totalDiff > 0
+          ? `📈 ${totalDiff.toFixed(1)} kg dobiveno ukupno`
+          : 'Ista težina od početka';
+      sub.textContent = totalStr;
+    }
+  }
+}
+
+// =====================
+// NOTIFICATIONS
+// =====================
+let notifSettings = { morning: false, morningTime: '07:00', evening: false, eveningTime: '21:00', food: false, foodTime: '12:00' };
+let notifTimers = [];
+
+function loadNotifSettings() {
+  const saved = localStorage.getItem('tracker_notif');
+  if (saved) notifSettings = { ...notifSettings, ...JSON.parse(saved) };
+  document.getElementById('notifMorningOn').checked = notifSettings.morning;
+  document.getElementById('notifMorningTime').value = notifSettings.morningTime;
+  document.getElementById('notifEveningOn').checked = notifSettings.evening;
+  document.getElementById('notifEveningTime').value = notifSettings.eveningTime;
+  document.getElementById('notifFoodOn').checked = notifSettings.food;
+  document.getElementById('notifFoodTime').value = notifSettings.foodTime;
+  updateNotifPermBtn();
+  scheduleNotifications();
+}
+
+function saveNotifSettings() {
+  notifSettings.morning = document.getElementById('notifMorningOn').checked;
+  notifSettings.morningTime = document.getElementById('notifMorningTime').value;
+  notifSettings.evening = document.getElementById('notifEveningOn').checked;
+  notifSettings.eveningTime = document.getElementById('notifEveningTime').value;
+  notifSettings.food = document.getElementById('notifFoodOn').checked;
+  notifSettings.foodTime = document.getElementById('notifFoodTime').value;
+  localStorage.setItem('tracker_notif', JSON.stringify(notifSettings));
+  scheduleNotifications();
+  showToast('Notifikacije sačuvane ✓');
+}
+
+function updateNotifPermBtn() {
+  const btn = document.getElementById('notifPermBtn');
+  if (!btn) return;
+  if (!('Notification' in window)) {
+    btn.textContent = '🔕 Notifikacije nisu podržane';
+    btn.style.opacity = '0.5';
+    return;
+  }
+  if (Notification.permission === 'granted') {
+    btn.textContent = '✅ Notifikacije aktivne';
+    btn.style.borderColor = 'var(--accent)';
+    btn.style.color = 'var(--accent)';
+  } else if (Notification.permission === 'denied') {
+    btn.textContent = '🚫 Notifikacije blokirane — dozvoli u podešavanjima';
+    btn.style.opacity = '0.6';
+  } else {
+    btn.textContent = '🔔 Aktiviraj notifikacije';
+  }
+}
+
+async function requestNotifPermission() {
+  if (!('Notification' in window)) { showToast('Notifikacije nisu podržane'); return; }
+  const perm = await Notification.requestPermission();
+  updateNotifPermBtn();
+  if (perm === 'granted') {
+    showToast('Notifikacije aktivirane ✓');
+    scheduleNotifications();
+    // Test notification
+    setTimeout(() => {
+      new Notification('Moj Tracker 🎯', { body: 'Notifikacije rade! Sve je OK.', icon: 'icon-192.png' });
+    }, 1000);
+  } else {
+    showToast('Dozvola odbijena');
+  }
+}
+
+function scheduleNotifications() {
+  // Clear old timers
+  notifTimers.forEach(t => clearTimeout(t));
+  notifTimers = [];
+  if (Notification.permission !== 'granted') return;
+
+  const schedule = (enabled, timeStr, title, body) => {
+    if (!enabled) return;
+    const [h, m] = timeStr.split(':').map(Number);
+    const now = new Date();
+    const target = new Date();
+    target.setHours(h, m, 0, 0);
+    if (target <= now) target.setDate(target.getDate() + 1);
+    const delay = target - now;
+    const t = setTimeout(() => {
+      new Notification(title, { body, icon: 'icon-192.png' });
+      // Reschedule for tomorrow
+      schedule(enabled, timeStr, title, body);
+    }, delay);
+    notifTimers.push(t);
+  };
+
+  schedule(notifSettings.morning, notifSettings.morningTime,
+    '🌅 Dobro jutro!', 'Počni dan — čekiraj jutarnje navike 💪');
+  schedule(notifSettings.evening, notifSettings.eveningTime,
+    '🌙 Kraj dana', 'Jesi li završio sve navike za danas?');
+  schedule(notifSettings.food, notifSettings.foodTime,
+    '🍽️ Podsjetnik za hranu',
+    todayLog.length === 0 ? 'Nisi još logovao nijedan obrok danas!' : 'Ne zaboravi logovati sve obroke 📝');
+}
+
+// =====================
 // INIT
 // =====================
 loadData();
@@ -2810,6 +3277,7 @@ loadHabits();
 loadWeightLog();
 updateHeader();
 updateTotals();
+updateWeightHero();
 renderFoodLog();
 filterFoods();
 renderJournalToday();
