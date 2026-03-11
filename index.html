@@ -7,8 +7,8 @@
 <meta name="mobile-web-app-capable" content="yes">
 <title>Moj Tracker</title>
 <link rel="manifest" href="manifest.json">
-<link rel="icon" type="image/png" sizes="512x512" href="icon-512_v2.png">
-<link rel="apple-touch-icon" sizes="192x192" href="icon-192_v2.png">
+<link rel="icon" type="image/png" sizes="512x512" href="icon-512.png">
+<link rel="apple-touch-icon" sizes="192x192" href="icon-192.png">
 <meta name="apple-mobile-web-app-capable" content="yes">
 <meta name="apple-mobile-web-app-title" content="Tracker">
 <meta name="theme-color" content="#0f0f0f">
@@ -755,6 +755,399 @@
     letter-spacing: 1px;
     margin-bottom: 10px;
   }
+
+  /* HABIT ADD BUTTON */
+  .habit-add-btn {
+    width: 100%;
+    padding: 13px;
+    background: var(--accent-dim);
+    border: 1.5px dashed var(--accent);
+    border-radius: var(--radius);
+    color: var(--accent);
+    font-family: 'Syne', sans-serif;
+    font-weight: 700;
+    font-size: 14px;
+    cursor: pointer;
+    display: flex; align-items: center; justify-content: center; gap: 8px;
+    margin-bottom: 20px;
+    transition: opacity 0.2s;
+  }
+  .habit-add-btn:active { opacity: 0.7; }
+
+  /* EDIT MODE */
+  .habits-edit-toggle {
+    font-size: 12px; color: var(--text-muted);
+    background: none; border: 1px solid var(--border);
+    border-radius: 50px; padding: 5px 12px;
+    cursor: pointer; transition: all 0.2s;
+  }
+  .habits-edit-toggle.active { color: var(--red); border-color: var(--red); }
+  .habit-delete-btn {
+    width: 28px; height: 28px; border-radius: 50%;
+    background: rgba(255,92,92,0.15);
+    border: 1.5px solid var(--red);
+    color: var(--red); font-size: 16px;
+    cursor: pointer; display: flex; align-items: center; justify-content: center;
+    flex-shrink: 0; transition: all 0.2s;
+  }
+  .habit-delete-btn:active { background: var(--red); color: #fff; }
+  .habit-item.edit-mode { cursor: default; }
+  .habit-item.edit-mode.builtin .habit-delete-btn { opacity: 0.2; cursor: not-allowed; }
+
+  /* ADD HABIT MODAL */
+  .habit-modal-overlay {
+    position: fixed; inset: 0;
+    background: rgba(0,0,0,0.85);
+    z-index: 100; display: none; align-items: flex-end;
+  }
+  .habit-modal-overlay.open { display: flex; }
+  .habit-modal {
+    background: var(--surface);
+    border-radius: 24px 24px 0 0;
+    padding: 24px 20px 40px;
+    width: 100%;
+    border-top: 1px solid var(--border);
+    animation: slideUp 0.3s ease;
+  }
+  .habit-modal-title {
+    font-family: 'Syne', sans-serif;
+    font-size: 18px; font-weight: 800;
+    margin-bottom: 20px;
+  }
+  .habit-form-row {
+    display: flex; gap: 10px; margin-bottom: 14px; align-items: center;
+  }
+  .habit-emoji-picker {
+    font-size: 28px; width: 52px; height: 52px;
+    background: var(--surface2); border: 1px solid var(--border);
+    border-radius: var(--radius-sm); cursor: pointer;
+    display: flex; align-items: center; justify-content: center;
+    flex-shrink: 0; transition: border-color 0.2s;
+  }
+  .habit-emoji-picker:active { border-color: var(--accent); }
+  .habit-name-input {
+    flex: 1; padding: 13px 16px;
+    background: var(--surface2);
+    border: 1px solid var(--border);
+    border-radius: var(--radius-sm);
+    color: var(--text); font-family: 'DM Sans', sans-serif;
+    font-size: 15px; outline: none;
+    transition: border-color 0.2s;
+  }
+  .habit-name-input:focus { border-color: var(--accent); }
+  .habit-group-label { font-size: 13px; color: var(--text-muted); margin-bottom: 8px; }
+  .habit-group-picker {
+    display: flex; gap: 8px; flex-wrap: wrap; margin-bottom: 20px;
+  }
+  .habit-group-opt {
+    padding: 7px 14px; border-radius: 50px;
+    border: 1px solid var(--border);
+    background: none; color: var(--text-muted);
+    font-size: 13px; cursor: pointer; transition: all 0.2s;
+  }
+  .habit-group-opt.active {
+    background: var(--accent); border-color: var(--accent);
+    color: #000; font-weight: 700;
+  }
+  .emoji-grid {
+    display: grid; grid-template-columns: repeat(8, 1fr);
+    gap: 6px; margin-bottom: 16px;
+    max-height: 160px; overflow-y: auto;
+  }
+  .emoji-opt {
+    font-size: 22px; padding: 6px;
+    border-radius: 8px; cursor: pointer;
+    text-align: center; transition: background 0.15s;
+    border: 1.5px solid transparent;
+  }
+  .emoji-opt:active, .emoji-opt.selected { background: var(--accent-dim); border-color: var(--accent); }
+
+  /* HABITS */
+  .habits-header {
+    display: flex; justify-content: space-between; align-items: center;
+    margin-bottom: 20px;
+  }
+  .habits-progress-text {
+    font-size: 13px; color: var(--text-muted);
+  }
+  .habits-progress-text strong { color: var(--accent); font-family: 'Syne', sans-serif; font-size: 16px; }
+  .habits-progress-bar {
+    height: 4px; background: var(--border); border-radius: 2px;
+    margin-bottom: 20px; overflow: hidden;
+  }
+  .habits-progress-fill {
+    height: 100%; background: var(--accent); border-radius: 2px;
+    transition: width 0.4s ease;
+  }
+  .habit-group { margin-bottom: 24px; }
+  .habit-group-title {
+    font-size: 11px; font-weight: 700;
+    color: var(--text-muted); text-transform: uppercase;
+    letter-spacing: 1px; margin-bottom: 10px;
+  }
+  .habit-item {
+    display: flex; align-items: center; gap: 14px;
+    padding: 14px 16px;
+    background: var(--surface);
+    border: 1.5px solid var(--border);
+    border-radius: var(--radius-sm);
+    margin-bottom: 8px;
+    cursor: pointer;
+    transition: all 0.2s;
+    user-select: none;
+  }
+  .habit-item.done {
+    border-color: var(--accent);
+    background: rgba(200, 244, 90, 0.06);
+  }
+  .habit-item:active { opacity: 0.7; }
+  .habit-checkbox {
+    width: 24px; height: 24px;
+    border-radius: 50%;
+    border: 2px solid var(--border);
+    display: flex; align-items: center; justify-content: center;
+    flex-shrink: 0;
+    transition: all 0.2s;
+    font-size: 13px;
+  }
+  .habit-item.done .habit-checkbox {
+    background: var(--accent);
+    border-color: var(--accent);
+    color: #000;
+  }
+  .habit-emoji { font-size: 20px; flex-shrink: 0; }
+  .habit-info { flex: 1; }
+  .habit-name { font-size: 15px; font-weight: 500; }
+  .habit-item.done .habit-name { color: var(--text-muted); text-decoration: line-through; }
+  .habit-time { font-size: 11px; color: var(--text-dim); margin-top: 2px; }
+  .habit-streak-badge {
+    font-size: 11px; font-weight: 700;
+    color: var(--orange);
+    font-family: 'Syne', sans-serif;
+    flex-shrink: 0;
+  }
+
+  /* HABIT HISTORY DOTS */
+  .habit-history {
+    background: var(--surface);
+    border: 1px solid var(--border);
+    border-radius: var(--radius);
+    padding: 16px;
+    margin-bottom: 16px;
+  }
+  .habit-history-title {
+    font-family: 'Syne', sans-serif;
+    font-size: 13px; font-weight: 700;
+    color: var(--text-muted);
+    text-transform: uppercase;
+    letter-spacing: 1px;
+    margin-bottom: 14px;
+  }
+  .habit-heatmap-row {
+    display: flex; align-items: center;
+    gap: 6px; margin-bottom: 8px;
+  }
+  .habit-heatmap-label {
+    font-size: 11px; color: var(--text-muted);
+    width: 100px; flex-shrink: 0;
+    white-space: nowrap; overflow: hidden;
+    text-overflow: ellipsis;
+  }
+  .habit-heatmap-dots {
+    display: flex; gap: 3px; flex-wrap: nowrap;
+  }
+  .habit-dot {
+    width: 14px; height: 14px;
+    border-radius: 3px;
+    background: var(--border);
+    flex-shrink: 0;
+  }
+  .habit-dot.done { background: var(--accent); opacity: 0.85; }
+  .habit-dot.today { outline: 2px solid var(--accent); outline-offset: 1px; }
+
+  /* STATS */
+  .stats-range-toggle {
+    display: flex;
+    background: var(--surface);
+    border-radius: 50px;
+    border: 1px solid var(--border);
+    padding: 3px;
+    margin-bottom: 20px;
+    width: fit-content;
+  }
+  .range-btn {
+    padding: 7px 20px;
+    border-radius: 50px;
+    border: none;
+    background: none;
+    color: var(--text-muted);
+    font-family: 'Syne', sans-serif;
+    font-weight: 700;
+    font-size: 13px;
+    cursor: pointer;
+    transition: all 0.2s;
+  }
+  .range-btn.active {
+    background: var(--accent);
+    color: #000;
+  }
+  .stats-grid {
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    gap: 10px;
+    margin-bottom: 20px;
+  }
+  .stat-card {
+    background: var(--surface);
+    border: 1px solid var(--border);
+    border-radius: var(--radius);
+    padding: 16px;
+  }
+  .stat-card.full { grid-column: 1 / -1; }
+  .stat-card-label {
+    font-size: 11px;
+    color: var(--text-muted);
+    text-transform: uppercase;
+    letter-spacing: 1px;
+    margin-bottom: 6px;
+  }
+  .stat-card-value {
+    font-family: 'Syne', sans-serif;
+    font-size: 26px;
+    font-weight: 800;
+    color: var(--accent);
+    line-height: 1;
+  }
+  .stat-card-sub {
+    font-size: 12px;
+    color: var(--text-muted);
+    margin-top: 4px;
+  }
+  .stat-card-value.orange { color: var(--orange); }
+  .stat-card-value.red { color: var(--red); }
+  .stat-card-value.blue { color: #70c8ff; }
+  .stat-card-value.purple { color: #b39ddb; }
+
+  /* STREAK */
+  .streak-display {
+    display: flex;
+    align-items: center;
+    gap: 12px;
+  }
+  .streak-fire {
+    font-size: 36px;
+    line-height: 1;
+  }
+  .streak-info { flex: 1; }
+  .streak-days {
+    font-family: 'Syne', sans-serif;
+    font-size: 36px;
+    font-weight: 800;
+    color: var(--orange);
+    line-height: 1;
+  }
+  .streak-label { font-size: 12px; color: var(--text-muted); margin-top: 2px; }
+
+  /* CHART CONTAINER */
+  .chart-wrap {
+    background: var(--surface);
+    border: 1px solid var(--border);
+    border-radius: var(--radius);
+    padding: 16px;
+    margin-bottom: 16px;
+  }
+  .chart-title {
+    font-family: 'Syne', sans-serif;
+    font-size: 13px;
+    font-weight: 700;
+    color: var(--text-muted);
+    text-transform: uppercase;
+    letter-spacing: 1px;
+    margin-bottom: 14px;
+  }
+  canvas { display: block; width: 100% !important; }
+
+  /* MACRO PIE */
+  .macro-pie-wrap {
+    display: flex;
+    align-items: center;
+    gap: 20px;
+  }
+  .macro-legend {
+    display: flex;
+    flex-direction: column;
+    gap: 8px;
+    flex: 1;
+  }
+  .legend-item {
+    display: flex;
+    align-items: center;
+    gap: 8px;
+    font-size: 13px;
+  }
+  .legend-dot {
+    width: 10px; height: 10px;
+    border-radius: 50%;
+    flex-shrink: 0;
+  }
+  .legend-val {
+    font-family: 'Syne', sans-serif;
+    font-weight: 700;
+    margin-left: auto;
+  }
+
+  /* WEIGHT LOG */
+  .weight-log-row {
+    display: flex;
+    align-items: center;
+    padding: 10px 0;
+    border-bottom: 1px solid var(--border);
+    gap: 12px;
+  }
+  .weight-log-row:last-child { border-bottom: none; }
+  .weight-log-date { font-size: 12px; color: var(--text-muted); flex: 1; }
+  .weight-log-val {
+    font-family: 'Syne', sans-serif;
+    font-weight: 700;
+    font-size: 16px;
+  }
+  .weight-log-diff { font-size: 12px; }
+  .weight-log-diff.down { color: var(--accent); }
+  .weight-log-diff.up { color: var(--red); }
+  .weight-input-row {
+    display: flex; gap: 8px; margin-top: 12px;
+  }
+  .weight-input-field {
+    flex: 1;
+    padding: 10px 14px;
+    background: var(--surface2);
+    border: 1px solid var(--border);
+    border-radius: var(--radius-sm);
+    color: var(--text);
+    font-size: 16px;
+    font-family: 'Syne', sans-serif;
+    font-weight: 700;
+    outline: none;
+    transition: border-color 0.2s;
+  }
+  .weight-input-field:focus { border-color: var(--accent); }
+  .weight-save-btn {
+    padding: 10px 18px;
+    background: var(--accent);
+    border: none;
+    border-radius: var(--radius-sm);
+    color: #000;
+    font-family: 'Syne', sans-serif;
+    font-weight: 800;
+    font-size: 14px;
+    cursor: pointer;
+  }
+  .no-data-msg {
+    text-align: center;
+    color: var(--text-dim);
+    font-size: 13px;
+    padding: 20px 0;
+  }
 </style>
 </head>
 <body>
@@ -771,6 +1164,8 @@
 <!-- TABS -->
 <div class="tabs">
   <button class="tab active" onclick="switchNav('food')">🍽️ Hrana</button>
+  <button class="tab" onclick="switchNav('habits')">✅ Navike</button>
+  <button class="tab" onclick="switchNav('stats')">📊 Statistike</button>
   <button class="tab" onclick="switchNav('journal')">📓 Journal</button>
   <button class="tab" onclick="switchNav('history')">📅 Historija</button>
   <button class="tab" onclick="switchNav('settings')">⚙️ Postavke</button>
@@ -820,6 +1215,61 @@
       <div class="emoji">🍽️</div>
       <div>Još nisi dodao nijedan obrok.<br>Pritisni dugme iznad!</div>
     </div>
+  </div>
+</div>
+
+<!-- STATS SECTION -->
+<div class="section" id="sec-stats">
+  <div style="height:20px"></div>
+
+  <!-- RANGE TOGGLE -->
+  <div class="stats-range-toggle">
+    <button class="range-btn active" id="range7" onclick="setRange(7)">7 dana</button>
+    <button class="range-btn" id="range30" onclick="setRange(30)">30 dana</button>
+  </div>
+
+  <!-- SUMMARY CARDS -->
+  <div class="stats-grid" id="statsCards"></div>
+
+  <!-- CALORIES CHART -->
+  <div class="chart-wrap">
+    <div class="chart-title">🔥 Kalorije po danu</div>
+    <canvas id="caloriesChart" height="160"></canvas>
+    <div class="no-data-msg" id="caloriesNoData" style="display:none">Nema dovoljno podataka još.</div>
+  </div>
+
+  <!-- MACROS PIE -->
+  <div class="chart-wrap">
+    <div class="chart-title">⚖️ Prosjek makroa</div>
+    <div class="macro-pie-wrap">
+      <canvas id="macroChart" width="130" height="130" style="flex-shrink:0; width:130px!important; height:130px!important;"></canvas>
+      <div class="macro-legend" id="macroLegend"></div>
+    </div>
+    <div class="no-data-msg" id="macroNoData" style="display:none">Nema dovoljno podataka još.</div>
+  </div>
+
+  <!-- WEIGHT CHART -->
+  <div class="chart-wrap">
+    <div class="chart-title">⚖️ Težina</div>
+    <canvas id="weightChart" height="140"></canvas>
+    <div class="no-data-msg" id="weightNoData" style="display:none">Nema unesene težine još.</div>
+    <div class="weight-input-row">
+      <input type="number" class="weight-input-field" id="weightStatInput" placeholder="npr. 99.5" step="0.1">
+      <button class="weight-save-btn" onclick="logWeight()">+ Upiši</button>
+    </div>
+  </div>
+
+  <!-- STREAK -->
+  <div class="chart-wrap">
+    <div class="chart-title">🔥 Streak</div>
+    <div class="streak-display">
+      <div class="streak-fire">🔥</div>
+      <div class="streak-info">
+        <div class="streak-days" id="streakDays">0</div>
+        <div class="streak-label">uzastopnih dana logovanja</div>
+      </div>
+    </div>
+    <div style="margin-top:14px;" id="streakDots"></div>
   </div>
 </div>
 
@@ -901,6 +1351,63 @@
   </div>
 </div>
 
+<!-- HABITS SECTION -->
+<div class="section" id="sec-habits">
+  <div style="height:20px"></div>
+
+  <div class="habits-header">
+    <div>
+      <div class="section-title" style="margin-bottom:2px">Danas</div>
+      <div class="habits-progress-text"><strong id="habitsDoneCount">0</strong> / <span id="habitsTotal">14</span> navika</div>
+    </div>
+    <div style="display:flex; align-items:center; gap:10px;">
+      <button class="habits-edit-toggle" id="habitsEditToggle" onclick="toggleEditMode()">Uredi</button>
+      <div style="font-size:22px" id="habitsMotivEmoji">💪</div>
+    </div>
+  </div>
+
+  <div class="habits-progress-bar">
+    <div class="habits-progress-fill" id="habitsProgressFill" style="width:0%"></div>
+  </div>
+
+  <div id="habitsList"></div>
+
+  <button class="habit-add-btn" onclick="openHabitModal()">＋ Dodaj naviku</button>
+
+  <div class="habit-history">
+    <div class="habit-history-title">Zadnjih 14 dana</div>
+    <div id="habitHeatmap"></div>
+  </div>
+</div>
+
+<!-- ADD HABIT MODAL -->
+<div class="habit-modal-overlay" id="habitModalOverlay" onclick="closeHabitModalOnBg(event)">
+  <div class="habit-modal">
+    <div class="modal-handle"></div>
+    <div class="habit-modal-title">Nova navika</div>
+
+    <div class="habit-form-row">
+      <div class="habit-emoji-picker" id="habitEmojiPicker" onclick="toggleEmojiGrid()">⭐</div>
+      <input type="text" class="habit-name-input" id="habitNameInput" placeholder="Naziv navike...">
+    </div>
+
+    <div id="emojiGridWrap" style="display:none">
+      <div class="emoji-grid" id="emojiGrid"></div>
+    </div>
+
+    <div class="habit-group-label">Grupa</div>
+    <div class="habit-group-picker">
+      <button class="habit-group-opt active" onclick="selectHabitGroup(this,'Jutro')">🌅 Jutro</button>
+      <button class="habit-group-opt" onclick="selectHabitGroup(this,'Dan')">☀️ Dan</button>
+      <button class="habit-group-opt" onclick="selectHabitGroup(this,'Učenje')">📚 Učenje</button>
+      <button class="habit-group-opt" onclick="selectHabitGroup(this,'Veče')">🌙 Veče</button>
+      <button class="habit-group-opt" onclick="selectHabitGroup(this,'Ostalo')">📌 Ostalo</button>
+    </div>
+
+    <button class="confirm-btn" onclick="saveNewHabit()">Dodaj naviku</button>
+  </div>
+</div>
+
 <!-- SETTINGS SECTION -->
 <div class="section" id="sec-settings">
   <div style="height:20px"></div>
@@ -935,13 +1442,17 @@
     <span class="nav-icon">🍽️</span>
     Hrana
   </button>
+  <button class="nav-item" id="nav-habits" onclick="switchNav('habits')">
+    <span class="nav-icon">✅</span>
+    Navike
+  </button>
+  <button class="nav-item" id="nav-stats" onclick="switchNav('stats')">
+    <span class="nav-icon">📊</span>
+    Statistike
+  </button>
   <button class="nav-item" id="nav-journal" onclick="switchNav('journal')">
     <span class="nav-icon">📓</span>
     Journal
-  </button>
-  <button class="nav-item" id="nav-history" onclick="switchNav('history')">
-    <span class="nav-icon">📅</span>
-    Historija
   </button>
   <button class="nav-item" id="nav-settings" onclick="switchNav('settings')">
     <span class="nav-icon">⚙️</span>
@@ -1383,18 +1894,6 @@ function filterFoods() {
 // =====================
 // NAVIGATION
 // =====================
-function switchNav(page) {
-  document.querySelectorAll('.section').forEach(s => s.classList.remove('active'));
-  document.querySelectorAll('.nav-item, .tab').forEach(n => n.classList.remove('active'));
-  document.getElementById('sec-' + page).classList.add('active');
-  document.getElementById('nav-' + page)?.classList.add('active');
-  document.querySelectorAll('.tab').forEach(t => {
-    if (t.getAttribute('onclick')?.includes("'" + page + "'")) t.classList.add('active');
-  });
-  if (page === 'history') renderHistory();
-  if (page === 'journal') { renderJournalToday(); renderJournalHistory('all'); }
-}
-
 // =====================
 // TOAST
 // =====================
@@ -1642,10 +2141,673 @@ function stopVoice() {
 }
 
 // =====================
+// STATISTICS
+// =====================
+let statsRange = 7;
+let weightLog = {};
+
+function loadWeightLog() {
+  const saved = localStorage.getItem('tracker_weight_log');
+  if (saved) weightLog = JSON.parse(saved);
+}
+
+function saveWeightLog() {
+  localStorage.setItem('tracker_weight_log', JSON.stringify(weightLog));
+}
+
+function logWeight() {
+  const val = parseFloat(document.getElementById('weightStatInput').value);
+  if (!val || val < 20 || val > 300) { showToast('Upiši validnu težinu'); return; }
+  weightLog[todayKey()] = val;
+  // Also update settings weight
+  document.getElementById('weightInput').value = val;
+  localStorage.setItem('tracker_weight', val);
+  saveWeightLog();
+  document.getElementById('weightStatInput').value = '';
+  renderStats();
+  showToast(`${val} kg upisano ✓`);
+}
+
+function setRange(days) {
+  statsRange = days;
+  document.getElementById('range7').classList.toggle('active', days === 7);
+  document.getElementById('range30').classList.toggle('active', days === 30);
+  renderStats();
+}
+
+function getLastNDays(n) {
+  const days = [];
+  for (let i = n - 1; i >= 0; i--) {
+    const d = new Date();
+    d.setDate(d.getDate() - i);
+    days.push(d.toISOString().split('T')[0]);
+  }
+  return days;
+}
+
+function getDayLabel(dateStr, range) {
+  const d = new Date(dateStr);
+  if (range === 7) {
+    return ['Ned','Pon','Uto','Sri','Čet','Pet','Sub'][d.getDay()];
+  } else {
+    return d.getDate() + '.';
+  }
+}
+
+function renderStats() {
+  const days = getLastNDays(statsRange);
+  const daysWithData = days.filter(d => allLog[d] && allLog[d].length > 0);
+
+  // --- Summary cards ---
+  let totalKcal = 0, totalP = 0, totalF = 0, totalC = 0, loggedDays = 0;
+  days.forEach(d => {
+    const entries = allLog[d] || [];
+    if (entries.length > 0) {
+      loggedDays++;
+      entries.forEach(e => {
+        totalKcal += e.kcal; totalP += e.p; totalF += e.f; totalC += e.c;
+      });
+    }
+  });
+
+  const avgKcal = loggedDays ? Math.round(totalKcal / loggedDays) : 0;
+  const avgP = loggedDays ? Math.round(totalP / loggedDays) : 0;
+  const avgF = loggedDays ? Math.round(totalF / loggedDays) : 0;
+  const avgC = loggedDays ? Math.round(totalC / loggedDays) : 0;
+
+  // Streak
+  const streak = calcStreak();
+
+  // Best day
+  let bestKcal = 0, bestDay = '-';
+  days.forEach(d => {
+    const k = (allLog[d] || []).reduce((a, e) => a + e.kcal, 0);
+    if (k > bestKcal) { bestKcal = k; bestDay = d; }
+  });
+
+  document.getElementById('statsCards').innerHTML = `
+    <div class="stat-card">
+      <div class="stat-card-label">Prosj. kalorije</div>
+      <div class="stat-card-value">${avgKcal}</div>
+      <div class="stat-card-sub">kcal / dan</div>
+    </div>
+    <div class="stat-card">
+      <div class="stat-card-label">Dana logovano</div>
+      <div class="stat-card-value" style="color:var(--text)">${loggedDays}<span style="font-size:14px;color:var(--text-muted)">/${statsRange}</span></div>
+      <div class="stat-card-sub">${Math.round(loggedDays/statsRange*100)}% konzistentnost</div>
+    </div>
+    <div class="stat-card">
+      <div class="stat-card-label">Prosj. proteini</div>
+      <div class="stat-card-value orange">${avgP}g</div>
+      <div class="stat-card-sub">po danu</div>
+    </div>
+    <div class="stat-card">
+      <div class="stat-card-label">Prosj. masti</div>
+      <div class="stat-card-value red">${avgF}g</div>
+      <div class="stat-card-sub">po danu</div>
+    </div>
+    <div class="stat-card">
+      <div class="stat-card-label">Prosj. ugljikohidrati</div>
+      <div class="stat-card-value blue">${avgC}g</div>
+      <div class="stat-card-sub">po danu</div>
+    </div>
+    <div class="stat-card">
+      <div class="stat-card-label">Streak</div>
+      <div class="stat-card-value" style="color:var(--orange)">${streak} 🔥</div>
+      <div class="stat-card-sub">uzastopnih dana</div>
+    </div>`;
+
+  // --- Calories bar chart ---
+  renderCaloriesChart(days);
+
+  // --- Macro pie chart ---
+  renderMacroPie(avgP, avgF, avgC, loggedDays);
+
+  // --- Weight chart ---
+  renderWeightChart(days);
+
+  // --- Streak dots ---
+  renderStreakSection(streak, days);
+}
+
+function renderCaloriesChart(days) {
+  const canvas = document.getElementById('caloriesChart');
+  const noData = document.getElementById('caloriesNoData');
+  const daysWithData = days.filter(d => allLog[d] && allLog[d].length > 0);
+
+  if (daysWithData.length === 0) {
+    canvas.style.display = 'none';
+    noData.style.display = 'block';
+    return;
+  }
+  canvas.style.display = 'block';
+  noData.style.display = 'none';
+
+  const ctx = canvas.getContext('2d');
+  const W = canvas.offsetWidth * window.devicePixelRatio || 300;
+  const H = 160 * window.devicePixelRatio || 160;
+  canvas.width = W; canvas.height = H;
+  const dpr = window.devicePixelRatio || 1;
+  ctx.scale(dpr, dpr);
+  const w = W / dpr, h = H / dpr;
+
+  const values = days.map(d => (allLog[d] || []).reduce((a, e) => a + e.kcal, 0));
+  const maxVal = Math.max(...values, calorieGoal * 1.1);
+  const padL = 36, padR = 8, padT = 10, padB = 28;
+  const chartW = w - padL - padR;
+  const chartH = h - padT - padB;
+  const barW = Math.max((chartW / days.length) * 0.6, 4);
+  const gap = chartW / days.length;
+
+  ctx.clearRect(0, 0, w, h);
+
+  // Goal line
+  const goalY = padT + chartH - (calorieGoal / maxVal) * chartH;
+  ctx.setLineDash([4, 4]);
+  ctx.strokeStyle = 'rgba(200,244,90,0.3)';
+  ctx.lineWidth = 1;
+  ctx.beginPath();
+  ctx.moveTo(padL, goalY);
+  ctx.lineTo(w - padR, goalY);
+  ctx.stroke();
+  ctx.setLineDash([]);
+  ctx.fillStyle = 'rgba(200,244,90,0.5)';
+  ctx.font = '9px sans-serif';
+  ctx.fillText('cilj', padL + 2, goalY - 3);
+
+  // Bars
+  days.forEach((d, i) => {
+    const val = values[i];
+    const barH = val > 0 ? Math.max((val / maxVal) * chartH, 3) : 0;
+    const x = padL + i * gap + (gap - barW) / 2;
+    const y = padT + chartH - barH;
+
+    // Bar color — green if under goal, orange if over
+    const isOver = val > calorieGoal;
+    const isToday = d === todayKey();
+
+    if (val > 0) {
+      const grad = ctx.createLinearGradient(0, y, 0, y + barH);
+      if (isOver) {
+        grad.addColorStop(0, 'rgba(255,159,67,0.9)');
+        grad.addColorStop(1, 'rgba(255,159,67,0.3)');
+      } else {
+        grad.addColorStop(0, 'rgba(200,244,90,0.9)');
+        grad.addColorStop(1, 'rgba(200,244,90,0.25)');
+      }
+      ctx.fillStyle = grad;
+      const r = Math.min(4, barW / 2);
+      ctx.beginPath();
+      ctx.moveTo(x + r, y);
+      ctx.lineTo(x + barW - r, y);
+      ctx.quadraticCurveTo(x + barW, y, x + barW, y + r);
+      ctx.lineTo(x + barW, y + barH);
+      ctx.lineTo(x, y + barH);
+      ctx.lineTo(x, y + r);
+      ctx.quadraticCurveTo(x, y, x + r, y);
+      ctx.fill();
+
+      // Value on top
+      if (val > 0 && barH > 16) {
+        ctx.fillStyle = isOver ? 'rgba(255,159,67,0.9)' : 'rgba(200,244,90,0.9)';
+        ctx.font = `bold ${Math.min(9, barW)}px sans-serif`;
+        ctx.textAlign = 'center';
+        ctx.fillText(Math.round(val), x + barW / 2, y - 3);
+      }
+    } else {
+      // Empty bar placeholder
+      ctx.fillStyle = 'rgba(255,255,255,0.04)';
+      ctx.fillRect(x, padT + chartH - 2, barW, 2);
+    }
+
+    // X label
+    ctx.fillStyle = isToday ? 'rgba(200,244,90,0.9)' : 'rgba(136,136,136,0.8)';
+    ctx.font = isToday ? `bold 9px sans-serif` : '9px sans-serif';
+    ctx.textAlign = 'center';
+    ctx.fillText(getDayLabel(d, statsRange), x + barW / 2, h - padB + 12);
+  });
+
+  // Y axis labels
+  ctx.fillStyle = 'rgba(136,136,136,0.6)';
+  ctx.font = '9px sans-serif';
+  ctx.textAlign = 'right';
+  [0, 0.5, 1].forEach(p => {
+    const yy = padT + chartH - p * chartH;
+    ctx.fillText(Math.round(maxVal * p), padL - 3, yy + 3);
+  });
+}
+
+function renderMacroPie(p, f, c, loggedDays) {
+  const canvas = document.getElementById('macroChart');
+  const noData = document.getElementById('macroNoData');
+  const legend = document.getElementById('macroLegend');
+
+  if (loggedDays === 0) {
+    canvas.style.display = 'none';
+    noData.style.display = 'block';
+    legend.innerHTML = '';
+    return;
+  }
+  canvas.style.display = 'block';
+  noData.style.display = 'none';
+
+  const total = p * 4 + f * 9 + c * 4; // kcal
+  const slices = [
+    { label: 'Proteini', val: p, kcal: p * 4, color: '#ff9f43' },
+    { label: 'Masti', val: f, kcal: f * 9, color: '#ff5c5c' },
+    { label: 'Ugljikohidrati', val: c, kcal: c * 4, color: '#70c8ff' },
+  ];
+
+  const ctx = canvas.getContext('2d');
+  const size = 130 * (window.devicePixelRatio || 1);
+  canvas.width = size; canvas.height = size;
+  ctx.scale(window.devicePixelRatio || 1, window.devicePixelRatio || 1);
+  const cx = 65, cy = 65, radius = 52, inner = 30;
+
+  let startAngle = -Math.PI / 2;
+  slices.forEach(s => {
+    const sweep = total > 0 ? (s.kcal / total) * Math.PI * 2 : Math.PI * 2 / 3;
+    ctx.beginPath();
+    ctx.moveTo(cx, cy);
+    ctx.arc(cx, cy, radius, startAngle, startAngle + sweep);
+    ctx.closePath();
+    ctx.fillStyle = s.color;
+    ctx.fill();
+    startAngle += sweep;
+  });
+
+  // Inner circle (donut hole)
+  ctx.beginPath();
+  ctx.arc(cx, cy, inner, 0, Math.PI * 2);
+  ctx.fillStyle = '#1a1a1a';
+  ctx.fill();
+
+  // Center text
+  ctx.fillStyle = '#f0f0f0';
+  ctx.font = 'bold 11px sans-serif';
+  ctx.textAlign = 'center';
+  ctx.fillText(Math.round(total), cx, cy + 4);
+
+  // Legend
+  legend.innerHTML = slices.map(s => `
+    <div class="legend-item">
+      <div class="legend-dot" style="background:${s.color}"></div>
+      <span style="color:var(--text-muted)">${s.label}</span>
+      <span class="legend-val" style="color:${s.color}">${s.val}g</span>
+    </div>`).join('');
+}
+
+function renderWeightChart(days) {
+  const canvas = document.getElementById('weightChart');
+  const noData = document.getElementById('weightNoData');
+
+  const weightData = days.map(d => ({ date: d, val: weightLog[d] || null })).filter(d => d.val);
+
+  if (weightData.length < 2) {
+    canvas.style.display = 'none';
+    noData.style.display = 'block';
+    return;
+  }
+  canvas.style.display = 'block';
+  noData.style.display = 'none';
+
+  const ctx = canvas.getContext('2d');
+  const dpr = window.devicePixelRatio || 1;
+  const W = (canvas.offsetWidth || 300) * dpr;
+  const H = 140 * dpr;
+  canvas.width = W; canvas.height = H;
+  ctx.scale(dpr, dpr);
+  const w = W / dpr, h = H / dpr;
+
+  const vals = weightData.map(d => d.val);
+  const minV = Math.min(...vals) - 1;
+  const maxV = Math.max(...vals) + 1;
+  const padL = 36, padR = 8, padT = 10, padB = 24;
+  const chartW = w - padL - padR;
+  const chartH = h - padT - padB;
+
+  ctx.clearRect(0, 0, w, h);
+
+  // Grid lines
+  ctx.strokeStyle = 'rgba(255,255,255,0.05)';
+  ctx.lineWidth = 1;
+  [0, 0.5, 1].forEach(p => {
+    const yy = padT + p * chartH;
+    ctx.beginPath(); ctx.moveTo(padL, yy); ctx.lineTo(w - padR, yy); ctx.stroke();
+    ctx.fillStyle = 'rgba(136,136,136,0.5)';
+    ctx.font = '9px sans-serif';
+    ctx.textAlign = 'right';
+    ctx.fillText((maxV - p * (maxV - minV)).toFixed(1), padL - 3, yy + 3);
+  });
+
+  // Line + area
+  const pts = weightData.map((d, i) => {
+    const x = padL + (i / (weightData.length - 1)) * chartW;
+    const y = padT + ((maxV - d.val) / (maxV - minV)) * chartH;
+    return { x, y };
+  });
+
+  // Area fill
+  const grad = ctx.createLinearGradient(0, padT, 0, padT + chartH);
+  grad.addColorStop(0, 'rgba(200,244,90,0.15)');
+  grad.addColorStop(1, 'rgba(200,244,90,0)');
+  ctx.beginPath();
+  ctx.moveTo(pts[0].x, padT + chartH);
+  pts.forEach(p => ctx.lineTo(p.x, p.y));
+  ctx.lineTo(pts[pts.length - 1].x, padT + chartH);
+  ctx.closePath();
+  ctx.fillStyle = grad;
+  ctx.fill();
+
+  // Line
+  ctx.beginPath();
+  ctx.strokeStyle = '#c8f45a';
+  ctx.lineWidth = 2.5;
+  ctx.lineJoin = 'round';
+  pts.forEach((p, i) => i === 0 ? ctx.moveTo(p.x, p.y) : ctx.lineTo(p.x, p.y));
+  ctx.stroke();
+
+  // Dots + labels
+  pts.forEach((p, i) => {
+    ctx.beginPath();
+    ctx.arc(p.x, p.y, 4, 0, Math.PI * 2);
+    ctx.fillStyle = '#c8f45a';
+    ctx.fill();
+    ctx.fillStyle = 'rgba(200,244,90,0.8)';
+    ctx.font = 'bold 9px sans-serif';
+    ctx.textAlign = 'center';
+    ctx.fillText(weightData[i].val, p.x, p.y - 8);
+  });
+}
+
+function calcStreak() {
+  let streak = 0;
+  let d = new Date();
+  while (true) {
+    const key = d.toISOString().split('T')[0];
+    if (allLog[key] && allLog[key].length > 0) {
+      streak++;
+      d.setDate(d.getDate() - 1);
+    } else {
+      break;
+    }
+  }
+  return streak;
+}
+
+function renderStreakSection(streak, days) {
+  document.getElementById('streakDays').textContent = streak;
+  const dotsEl = document.getElementById('streakDots');
+  dotsEl.innerHTML = `<div style="display:flex; gap:4px; flex-wrap:wrap;">` +
+    days.map(d => {
+      const has = allLog[d] && allLog[d].length > 0;
+      const isToday = d === todayKey();
+      return `<div title="${d}" style="
+        width:20px; height:20px; border-radius:4px;
+        background:${has ? '#c8f45a' : '#242424'};
+        border:1px solid ${isToday ? '#c8f45a' : 'transparent'};
+        opacity:${has ? 1 : 0.5};
+      "></div>`;
+    }).join('') + `</div>
+    <div style="margin-top:8px; font-size:11px; color:var(--text-dim);">
+      🟩 = dan kad si logovao hranu
+    </div>`;
+}
+
+// =====================
+// HABITS
+// =====================
+// =====================
+// HABITS
+// =====================
+const DEFAULT_HABITS = [
+  { id: 'wake',     emoji: '🌅', name: 'Ustajanje',           group: 'Jutro',   builtin: true },
+  { id: 'teeth_m',  emoji: '🪥', name: 'Pranje zuba (jutro)', group: 'Jutro',   builtin: true },
+  { id: 'cream',    emoji: '🧴', name: 'Krema mazanje',        group: 'Jutro',   builtin: true },
+  { id: 'hair',     emoji: '💆', name: 'Preparat za kosu',     group: 'Jutro',   builtin: true },
+  { id: 'meal1',    emoji: '🍳', name: 'Obrok 1',              group: 'Jutro',   builtin: true },
+  { id: 'meditate', emoji: '🧘', name: 'Meditacija',           group: 'Jutro',   builtin: true },
+  { id: 'workout',  emoji: '💪', name: 'Treniranje',           group: 'Dan',     builtin: true },
+  { id: 'walk',     emoji: '🚶', name: 'Šetanje',              group: 'Dan',     builtin: true },
+  { id: 'meal2',    emoji: '🍽️', name: 'Obrok 2',              group: 'Dan',     builtin: true },
+  { id: 'german',   emoji: '🇩🇪', name: 'Njemački',            group: 'Učenje',  builtin: true },
+  { id: 'trading',  emoji: '📈', name: 'Trading učenje',       group: 'Učenje',  builtin: true },
+  { id: 'sudoku',   emoji: '🧩', name: 'Sudoku',               group: 'Učenje',  builtin: true },
+  { id: 'teeth_e',  emoji: '🪥', name: 'Pranje zuba (veče)',   group: 'Veče',    builtin: true },
+  { id: 'sleep',    emoji: '🌙', name: 'Lijeganje',            group: 'Veče',    builtin: true },
+];
+
+let habits = [...DEFAULT_HABITS];
+let habitLog = {};
+let habitsEditMode = false;
+let newHabitEmoji = '⭐';
+let newHabitGroup = 'Jutro';
+
+const EMOJI_LIST = ['⭐','🎯','💡','🏃','🧗','🚴','🏊','🎸','🎨','✍️','📖','📝','💊','🥗','🥤','💧','🛁','🛌','☕','🍵','🌞','🌿','🧠','❤️','🤝','📞','💰','🏠','🚗','✈️','🎮','📺','🎵','🎤','🌍','🔑','⚡','🔥','💎','🌈'];
+
+function loadHabits() {
+  const saved = localStorage.getItem('tracker_habits_v2');
+  if (saved) {
+    const data = JSON.parse(saved);
+    habits = data.habits || [...DEFAULT_HABITS];
+    habitLog = data.log || {};
+  } else {
+    // migrate old format
+    const oldLog = localStorage.getItem('tracker_habits');
+    if (oldLog) habitLog = JSON.parse(oldLog);
+  }
+}
+
+function saveHabits() {
+  localStorage.setItem('tracker_habits_v2', JSON.stringify({ habits, log: habitLog }));
+}
+
+function toggleHabit(id) {
+  if (habitsEditMode) return;
+  const today = todayKey();
+  if (!habitLog[today]) habitLog[today] = {};
+  habitLog[today][id] = !habitLog[today][id];
+  saveHabits();
+  renderHabits();
+}
+
+function deleteHabit(id) {
+  const h = habits.find(x => x.id === id);
+  if (h && h.builtin) { showToast('Ne možeš obrisati ugrađenu naviku'); return; }
+  if (!confirm('Obrisati ovu naviku?')) return;
+  habits = habits.filter(x => x.id !== id);
+  saveHabits();
+  renderHabits();
+  showToast('Navika obrisana ✓');
+}
+
+function toggleEditMode() {
+  habitsEditMode = !habitsEditMode;
+  const btn = document.getElementById('habitsEditToggle');
+  btn.textContent = habitsEditMode ? 'Gotovo' : 'Uredi';
+  btn.classList.toggle('active', habitsEditMode);
+  renderHabits();
+}
+
+function getHabitStreak(habitId) {
+  let streak = 0;
+  let d = new Date();
+  d.setDate(d.getDate() - 1);
+  while (streak < 365) {
+    const key = d.toISOString().split('T')[0];
+    if (habitLog[key] && habitLog[key][habitId]) {
+      streak++;
+      d.setDate(d.getDate() - 1);
+    } else break;
+  }
+  return streak;
+}
+
+function renderHabits() {
+  const today = todayKey();
+  const todayHabits = habitLog[today] || {};
+  const doneCount = habits.filter(h => todayHabits[h.id]).length;
+  const total = habits.length;
+  const pct = total ? Math.round((doneCount / total) * 100) : 0;
+
+  document.getElementById('habitsDoneCount').textContent = doneCount;
+  document.getElementById('habitsTotal').textContent = total;
+  document.getElementById('habitsProgressFill').style.width = pct + '%';
+
+  const motivEmoji = pct === 100 ? '🏆' : pct >= 70 ? '🔥' : pct >= 40 ? '💪' : pct > 0 ? '🌱' : '☀️';
+  document.getElementById('habitsMotivEmoji').textContent = habitsEditMode ? '✏️' : motivEmoji;
+
+  // Group
+  const groups = {};
+  const groupOrder = ['Jutro','Dan','Učenje','Veče','Ostalo'];
+  habits.forEach(h => {
+    const g = h.group || 'Ostalo';
+    if (!groups[g]) groups[g] = [];
+    groups[g].push(h);
+  });
+
+  let html = '';
+  groupOrder.forEach(group => {
+    if (!groups[group]) return;
+    html += `<div class="habit-group"><div class="habit-group-title">${group}</div>`;
+    groups[group].forEach(h => {
+      const done = !!todayHabits[h.id];
+      const streak = getHabitStreak(h.id);
+      const isBuiltin = !!h.builtin;
+      if (habitsEditMode) {
+        html += `
+          <div class="habit-item edit-mode ${isBuiltin ? 'builtin' : ''}" style="cursor:default">
+            <div class="habit-emoji">${h.emoji}</div>
+            <div class="habit-info"><div class="habit-name" style="text-decoration:none;color:var(--text)">${h.name}</div>
+              <div class="habit-time" style="color:var(--text-dim);font-size:11px">${isBuiltin ? 'ugrađena' : 'custom'}</div>
+            </div>
+            <button class="habit-delete-btn" onclick="deleteHabit('${h.id}')" ${isBuiltin ? 'disabled title="Ne može se obrisati"' : ''}>×</button>
+          </div>`;
+      } else {
+        html += `
+          <div class="habit-item ${done ? 'done' : ''}" onclick="toggleHabit('${h.id}')">
+            <div class="habit-checkbox">${done ? '✓' : ''}</div>
+            <div class="habit-emoji">${h.emoji}</div>
+            <div class="habit-info"><div class="habit-name">${h.name}</div></div>
+            ${streak > 0 ? `<div class="habit-streak-badge">${streak}🔥</div>` : ''}
+          </div>`;
+      }
+    });
+    html += '</div>';
+  });
+  document.getElementById('habitsList').innerHTML = html;
+  renderHabitHeatmap();
+}
+
+function renderHabitHeatmap() {
+  const days = [];
+  for (let i = 13; i >= 0; i--) {
+    const d = new Date(); d.setDate(d.getDate() - i);
+    days.push(d.toISOString().split('T')[0]);
+  }
+  const today = todayKey();
+  let html = '';
+  habits.forEach(h => {
+    const dots = days.map(d => {
+      const done = habitLog[d] && habitLog[d][h.id];
+      const isToday = d === today;
+      return `<div class="habit-dot ${done ? 'done' : ''} ${isToday ? 'today' : ''}"></div>`;
+    }).join('');
+    html += `<div class="habit-heatmap-row">
+      <div class="habit-heatmap-label">${h.emoji} ${h.name}</div>
+      <div class="habit-heatmap-dots">${dots}</div>
+    </div>`;
+  });
+  document.getElementById('habitHeatmap').innerHTML = html;
+}
+
+// =====================
+// ADD HABIT MODAL
+// =====================
+function openHabitModal() {
+  habitsEditMode = false;
+  document.getElementById('habitsEditToggle').textContent = 'Uredi';
+  document.getElementById('habitsEditToggle').classList.remove('active');
+  newHabitEmoji = '⭐';
+  newHabitGroup = 'Jutro';
+  document.getElementById('habitEmojiPicker').textContent = '⭐';
+  document.getElementById('habitNameInput').value = '';
+  document.getElementById('emojiGridWrap').style.display = 'none';
+  document.querySelectorAll('.habit-group-opt').forEach(b => b.classList.remove('active'));
+  document.querySelector('.habit-group-opt').classList.add('active');
+
+  // Build emoji grid
+  document.getElementById('emojiGrid').innerHTML = EMOJI_LIST.map(e =>
+    `<div class="emoji-opt" onclick="pickEmoji('${e}')">${e}</div>`
+  ).join('');
+
+  document.getElementById('habitModalOverlay').classList.add('open');
+  setTimeout(() => document.getElementById('habitNameInput').focus(), 300);
+}
+
+function closeHabitModal() {
+  document.getElementById('habitModalOverlay').classList.remove('open');
+}
+
+function closeHabitModalOnBg(e) {
+  if (e.target === document.getElementById('habitModalOverlay')) closeHabitModal();
+}
+
+function toggleEmojiGrid() {
+  const wrap = document.getElementById('emojiGridWrap');
+  wrap.style.display = wrap.style.display === 'none' ? 'block' : 'none';
+}
+
+function pickEmoji(emoji) {
+  newHabitEmoji = emoji;
+  document.getElementById('habitEmojiPicker').textContent = emoji;
+  document.querySelectorAll('.emoji-opt').forEach(el => el.classList.remove('selected'));
+  event.target.classList.add('selected');
+  document.getElementById('emojiGridWrap').style.display = 'none';
+}
+
+function selectHabitGroup(btn, group) {
+  document.querySelectorAll('.habit-group-opt').forEach(b => b.classList.remove('active'));
+  btn.classList.add('active');
+  newHabitGroup = group;
+}
+
+function saveNewHabit() {
+  const name = document.getElementById('habitNameInput').value.trim();
+  if (!name) { showToast('Upiši naziv navike!'); return; }
+
+  const id = 'custom_' + Date.now();
+  habits.push({ id, emoji: newHabitEmoji, name, group: newHabitGroup, builtin: false });
+  saveHabits();
+  closeHabitModal();
+  renderHabits();
+  showToast(`"${name}" dodano ✓`);
+}
+
+// =====================
+// NAVIGATION
+// =====================
+function switchNav(page) {
+  document.querySelectorAll('.section').forEach(s => s.classList.remove('active'));
+  document.querySelectorAll('.nav-item, .tab').forEach(n => n.classList.remove('active'));
+  document.getElementById('sec-' + page).classList.add('active');
+  document.getElementById('nav-' + page)?.classList.add('active');
+  document.querySelectorAll('.tab').forEach(t => {
+    if (t.getAttribute('onclick')?.includes("'" + page + "'")) t.classList.add('active');
+  });
+  if (page === 'history') renderHistory();
+  if (page === 'journal') { renderJournalToday(); renderJournalHistory('all'); }
+  if (page === 'stats') renderStats();
+  if (page === 'habits') renderHabits();
+}
+
+// =====================
 // INIT
 // =====================
 loadData();
 loadJournal();
+loadHabits();
+loadWeightLog();
 updateHeader();
 updateTotals();
 renderFoodLog();
