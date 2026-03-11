@@ -1819,11 +1819,11 @@
       <div class="notif-icon">🌅</div>
       <div class="notif-info">
         <div class="notif-label">Jutarnji podsjetnik</div>
-        <div class="notif-sub">Počni dan — čekiraj navike</div>
+        <div class="notif-sub">Počni dan — čekiraj jutarnje navike</div>
       </div>
       <input type="time" class="notif-time-input" id="notifMorningTime" value="07:00">
       <label class="toggle-switch">
-        <input type="checkbox" id="notifMorningOn" onchange="saveNotifSettings()">
+        <input type="checkbox" id="notifMorningOn">
         <span class="toggle-slider"></span>
       </label>
     </div>
@@ -1835,7 +1835,7 @@
       </div>
       <input type="time" class="notif-time-input" id="notifEveningTime" value="21:00">
       <label class="toggle-switch">
-        <input type="checkbox" id="notifEveningOn" onchange="saveNotifSettings()">
+        <input type="checkbox" id="notifEveningOn">
         <span class="toggle-slider"></span>
       </label>
     </div>
@@ -1847,11 +1847,12 @@
       </div>
       <input type="time" class="notif-time-input" id="notifFoodTime" value="12:00">
       <label class="toggle-switch">
-        <input type="checkbox" id="notifFoodOn" onchange="saveNotifSettings()">
+        <input type="checkbox" id="notifFoodOn">
         <span class="toggle-slider"></span>
       </label>
     </div>
   </div>
+  <button class="export-btn" style="background:var(--accent);color:#000;font-weight:800;border-color:var(--accent)" onclick="saveNotifSettings()">💾 Sačuvaj notifikacije</button>
   <button class="export-btn" onclick="requestNotifPermission()" id="notifPermBtn">🔔 Aktiviraj notifikacije</button>
 
   <div class="section-title">Podaci</div>
@@ -3617,32 +3618,30 @@ function updateWeightHero() {
 let notifSettings = { morning: false, morningTime: '07:00', evening: false, eveningTime: '21:00', food: false, foodTime: '12:00' };
 let notifTimers = [];
 
-let _notifLoading = false;
+let _notifLoading = false; // kept for safety
 
 function loadNotifSettings() {
   const saved = localStorage.getItem('tracker_notif');
-  if (saved) notifSettings = { ...notifSettings, ...JSON.parse(saved) };
-  // Set flag so saveNotifSettings ignores change events during init
-  _notifLoading = true;
-  document.getElementById('notifMorningOn').checked = notifSettings.morning;
-  document.getElementById('notifMorningTime').value = notifSettings.morningTime;
-  document.getElementById('notifEveningOn').checked = notifSettings.evening;
-  document.getElementById('notifEveningTime').value = notifSettings.eveningTime;
-  document.getElementById('notifFoodOn').checked = notifSettings.food;
-  document.getElementById('notifFoodTime').value = notifSettings.foodTime;
-  _notifLoading = false;
+  if (saved) {
+    try { notifSettings = { ...notifSettings, ...JSON.parse(saved) }; } catch(e) {}
+  }
+  document.getElementById('notifMorningOn').checked    = !!notifSettings.morning;
+  document.getElementById('notifMorningTime').value    = notifSettings.morningTime  || '07:00';
+  document.getElementById('notifEveningOn').checked    = !!notifSettings.evening;
+  document.getElementById('notifEveningTime').value    = notifSettings.eveningTime  || '21:00';
+  document.getElementById('notifFoodOn').checked       = !!notifSettings.food;
+  document.getElementById('notifFoodTime').value       = notifSettings.foodTime     || '12:00';
   updateNotifPermBtn();
   scheduleNotifications();
 }
 
 function saveNotifSettings() {
-  if (_notifLoading) return; // ignore events fired during init
-  notifSettings.morning = document.getElementById('notifMorningOn').checked;
+  notifSettings.morning     = document.getElementById('notifMorningOn').checked;
   notifSettings.morningTime = document.getElementById('notifMorningTime').value;
-  notifSettings.evening = document.getElementById('notifEveningOn').checked;
+  notifSettings.evening     = document.getElementById('notifEveningOn').checked;
   notifSettings.eveningTime = document.getElementById('notifEveningTime').value;
-  notifSettings.food = document.getElementById('notifFoodOn').checked;
-  notifSettings.foodTime = document.getElementById('notifFoodTime').value;
+  notifSettings.food        = document.getElementById('notifFoodOn').checked;
+  notifSettings.foodTime    = document.getElementById('notifFoodTime').value;
   localStorage.setItem('tracker_notif', JSON.stringify(notifSettings));
   scheduleNotifications();
   showToast('Notifikacije sačuvane ✓');
