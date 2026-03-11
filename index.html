@@ -1317,6 +1317,150 @@
   }
   .toggle-switch input:checked + .toggle-slider { background: var(--accent); }
   .toggle-switch input:checked + .toggle-slider:before { transform: translateX(20px); background: #000; }
+  /* ===== FASTING TIMER ===== */
+  .fast-card {
+    background: var(--surface);
+    border: 1px solid var(--border);
+    border-radius: var(--radius);
+    padding: 18px 20px;
+    margin-bottom: 16px;
+    display: flex; align-items: center; gap: 16px;
+  }
+  .fast-card.active { border-color: var(--accent); background: rgba(200,244,90,0.04); }
+  .fast-card.eating { border-color: var(--orange); background: rgba(255,159,67,0.04); }
+  .fast-timer-left { flex: 1; }
+  .fast-status {
+    font-size: 11px; font-weight: 700; text-transform: uppercase;
+    letter-spacing: 1px; color: var(--text-muted); margin-bottom: 4px;
+  }
+  .fast-card.active .fast-status { color: var(--accent); }
+  .fast-card.eating .fast-status { color: var(--orange); }
+  .fast-time-display {
+    font-family: 'Syne', sans-serif;
+    font-size: 36px; font-weight: 800; line-height: 1;
+    color: var(--text);
+  }
+  .fast-sub { font-size: 12px; color: var(--text-muted); margin-top: 4px; }
+  .fast-btn {
+    padding: 12px 18px;
+    border-radius: var(--radius-sm);
+    border: none; cursor: pointer;
+    font-family: 'Syne', sans-serif;
+    font-weight: 800; font-size: 13px;
+    transition: opacity 0.2s; flex-shrink: 0;
+  }
+  .fast-btn.start { background: var(--accent); color: #000; }
+  .fast-btn.stop { background: var(--orange); color: #000; }
+  .fast-btn:active { opacity: 0.7; }
+  .fast-progress-wrap { margin-top: 10px; }
+  .fast-progress-bar {
+    height: 3px; background: var(--border); border-radius: 2px; overflow: hidden;
+  }
+  .fast-progress-fill {
+    height: 100%; border-radius: 2px;
+    background: var(--accent); transition: width 0.5s linear;
+  }
+  .fast-card.eating .fast-progress-fill { background: var(--orange); }
+  .fast-history-row {
+    display: flex; justify-content: space-between; align-items: center;
+    padding: 8px 0; border-bottom: 1px solid var(--border); font-size: 13px;
+  }
+  .fast-history-row:last-child { border-bottom: none; }
+  .fast-history-date { color: var(--text-muted); }
+  .fast-history-val { font-family: 'Syne', sans-serif; font-weight: 700; color: var(--accent); }
+
+  /* ===== WEEKLY REVIEW ===== */
+  .weekly-hero {
+    background: linear-gradient(135deg, rgba(200,244,90,0.08), rgba(200,244,90,0.02));
+    border: 1px solid rgba(200,244,90,0.3);
+    border-radius: var(--radius);
+    padding: 20px;
+    margin-bottom: 16px;
+    text-align: center;
+  }
+  .weekly-week-label {
+    font-size: 11px; color: var(--accent); font-weight: 700;
+    text-transform: uppercase; letter-spacing: 1px; margin-bottom: 8px;
+  }
+  .weekly-grade {
+    font-family: 'Syne', sans-serif;
+    font-size: 64px; font-weight: 800; line-height: 1;
+    margin-bottom: 4px;
+  }
+  .weekly-grade-label { font-size: 14px; color: var(--text-muted); }
+  .weekly-grid {
+    display: grid; grid-template-columns: 1fr 1fr;
+    gap: 10px; margin-bottom: 16px;
+  }
+  .weekly-card {
+    background: var(--surface);
+    border: 1px solid var(--border);
+    border-radius: var(--radius-sm);
+    padding: 14px;
+  }
+  .weekly-card-icon { font-size: 18px; margin-bottom: 6px; }
+  .weekly-card-val {
+    font-family: 'Syne', sans-serif;
+    font-size: 22px; font-weight: 800; color: var(--accent); line-height: 1;
+  }
+  .weekly-card-val.orange { color: var(--orange); }
+  .weekly-card-val.red { color: var(--red); }
+  .weekly-card-label { font-size: 11px; color: var(--text-muted); margin-top: 3px; }
+  .weekly-insight {
+    background: var(--surface);
+    border: 1px solid var(--border);
+    border-radius: var(--radius-sm);
+    padding: 14px 16px;
+    margin-bottom: 8px;
+    font-size: 13px;
+    line-height: 1.6;
+  }
+  .weekly-insight-title {
+    font-size: 11px; font-weight: 700;
+    text-transform: uppercase; letter-spacing: 1px;
+    color: var(--text-muted); margin-bottom: 6px;
+  }
+  .weekly-nav {
+    display: flex; justify-content: space-between; align-items: center;
+    margin-bottom: 16px;
+  }
+  .weekly-nav-btn {
+    background: var(--surface); border: 1px solid var(--border);
+    border-radius: 50px; padding: 7px 16px;
+    color: var(--text); font-size: 13px; cursor: pointer;
+    transition: all 0.2s;
+  }
+  .weekly-nav-btn:active { border-color: var(--accent); color: var(--accent); }
+  .weekly-nav-btn:disabled { opacity: 0.3; cursor: default; }
+  .weekly-nav-label {
+    font-family: 'Syne', sans-serif;
+    font-size: 13px; font-weight: 700; color: var(--text);
+  }
+
+  /* ===== HABIT STATS ===== */
+  .habit-stat-row {
+    display: flex; align-items: center; gap: 10px;
+    padding: 10px 0; border-bottom: 1px solid var(--border);
+  }
+  .habit-stat-row:last-child { border-bottom: none; }
+  .habit-stat-emoji { font-size: 16px; width: 22px; text-align: center; flex-shrink: 0; }
+  .habit-stat-name { flex: 1; font-size: 13px; color: var(--text); }
+  .habit-stat-bar-wrap { width: 80px; }
+  .habit-stat-bar {
+    height: 6px; background: var(--border);
+    border-radius: 3px; overflow: hidden;
+  }
+  .habit-stat-fill {
+    height: 100%; border-radius: 3px;
+    background: var(--accent); transition: width 0.5s ease;
+  }
+  .habit-stat-fill.mid { background: var(--orange); }
+  .habit-stat-fill.low { background: var(--red); }
+  .habit-stat-pct {
+    font-family: 'Syne', sans-serif;
+    font-size: 12px; font-weight: 700;
+    color: var(--text-muted); width: 34px; text-align: right; flex-shrink: 0;
+  }
 </style>
 </head>
 <body>
@@ -1335,14 +1479,28 @@
   <button class="tab active" onclick="switchNav('food')">🍽️ Hrana</button>
   <button class="tab" onclick="switchNav('habits')">✅ Navike</button>
   <button class="tab" onclick="switchNav('stats')">📊 Statistike</button>
+  <button class="tab" onclick="switchNav('weekly')">📅 Sedmica</button>
   <button class="tab" onclick="switchNav('journal')">📓 Journal</button>
-  <button class="tab" onclick="switchNav('history')">📅 Historija</button>
+  <button class="tab" onclick="switchNav('history')">🗂️ Historija</button>
   <button class="tab" onclick="switchNav('settings')">⚙️ Postavke</button>
 </div>
 
 <!-- FOOD SECTION -->
 <div class="section active" id="sec-food">
   <div style="height:20px"></div>
+
+  <!-- FASTING TIMER -->
+  <div class="fast-card" id="fastCard">
+    <div class="fast-timer-left">
+      <div class="fast-status" id="fastStatus">NIJE AKTIVAN POST</div>
+      <div class="fast-time-display" id="fastTimeDisplay">00:00:00</div>
+      <div class="fast-sub" id="fastSub">Pritisni Start kad završiš obrok</div>
+      <div class="fast-progress-wrap">
+        <div class="fast-progress-bar"><div class="fast-progress-fill" id="fastProgressFill" style="width:0%"></div></div>
+      </div>
+    </div>
+    <button class="fast-btn start" id="fastBtn" onclick="toggleFast()">▶ Start</button>
+  </div>
   
   <div class="calorie-overview">
     <div class="ring-wrap">
@@ -1441,6 +1599,13 @@
     </div>
   </div>
 
+  <!-- HABIT COMPLETION STATS -->
+  <div class="chart-wrap">
+    <div class="chart-title">✅ Navike — % završenosti (30 dana)</div>
+    <div id="habitStatsList"></div>
+    <div class="no-data-msg" id="habitStatsNoData" style="display:none">Nema podataka o navikama još.</div>
+  </div>
+
   <!-- STREAK -->
   <div class="chart-wrap">
     <div class="chart-title">🔥 Streak</div>
@@ -1452,6 +1617,33 @@
       </div>
     </div>
     <div style="margin-top:14px;" id="streakDots"></div>
+  </div>
+</div>
+
+<!-- WEEKLY REVIEW SECTION -->
+<div class="section" id="sec-weekly">
+  <div style="height:20px"></div>
+
+  <div class="weekly-nav">
+    <button class="weekly-nav-btn" id="weekPrevBtn" onclick="changeWeek(-1)">← Prošla</button>
+    <div class="weekly-nav-label" id="weekNavLabel">Ova sedmica</div>
+    <button class="weekly-nav-btn" id="weekNextBtn" onclick="changeWeek(1)" disabled>Sljedeća →</button>
+  </div>
+
+  <div class="weekly-hero" id="weeklyHero">
+    <div class="weekly-week-label" id="weeklyPeriodLabel">--</div>
+    <div class="weekly-grade" id="weeklyGrade">--</div>
+    <div class="weekly-grade-label" id="weeklyGradeLabel">Izračunavam...</div>
+  </div>
+
+  <div class="weekly-grid" id="weeklyGrid"></div>
+
+  <div class="section-title">Uvidi</div>
+  <div id="weeklyInsights"></div>
+
+  <div class="section-title" style="margin-top:20px">Navike ove sedmice</div>
+  <div class="chart-wrap" style="margin-bottom:0">
+    <div id="weeklyHabitBreakdown"></div>
   </div>
 </div>
 
@@ -1681,9 +1873,9 @@
     <span class="nav-icon">📊</span>
     Statistike
   </button>
-  <button class="nav-item" id="nav-journal" onclick="switchNav('journal')">
-    <span class="nav-icon">📓</span>
-    Journal
+  <button class="nav-item" id="nav-weekly" onclick="switchNav('weekly')">
+    <span class="nav-icon">📅</span>
+    Sedmica
   </button>
   <button class="nav-item" id="nav-settings" onclick="switchNav('settings')">
     <span class="nav-icon">⚙️</span>
@@ -3103,6 +3295,239 @@ function saveNewHabit() {
 }
 
 // =====================
+// FASTING TIMER
+// =====================
+let fastState = { active: false, startTs: null, goal: 16 };
+let fastInterval = null;
+
+function loadFast() {
+  const saved = localStorage.getItem('tracker_fast');
+  if (saved) fastState = { ...fastState, ...JSON.parse(saved) };
+  if (fastState.active) startFastTick();
+  renderFast();
+}
+
+function saveFast() {
+  localStorage.setItem('tracker_fast', JSON.stringify(fastState));
+}
+
+function toggleFast() {
+  if (fastState.active) {
+    const elapsed = Date.now() - fastState.startTs;
+    const hours = elapsed / 3600000;
+    const history = JSON.parse(localStorage.getItem('tracker_fast_history') || '[]');
+    history.unshift({ date: todayKey(), hours: Math.round(hours * 10) / 10 });
+    localStorage.setItem('tracker_fast_history', JSON.stringify(history.slice(0, 30)));
+    fastState.active = false;
+    fastState.startTs = null;
+    clearInterval(fastInterval);
+    fastInterval = null;
+    showToast(`Post završen: ${Math.round(hours * 10) / 10}h ✓`);
+  } else {
+    fastState.active = true;
+    fastState.startTs = Date.now();
+    startFastTick();
+    showToast('Post započet! 💪');
+  }
+  saveFast();
+  renderFast();
+}
+
+function startFastTick() {
+  clearInterval(fastInterval);
+  fastInterval = setInterval(renderFast, 1000);
+}
+
+function renderFast() {
+  const card = document.getElementById('fastCard');
+  const statusEl = document.getElementById('fastStatus');
+  const timeEl = document.getElementById('fastTimeDisplay');
+  const subEl = document.getElementById('fastSub');
+  const btn = document.getElementById('fastBtn');
+  const fill = document.getElementById('fastProgressFill');
+  if (!card) return;
+
+  if (!fastState.active) {
+    card.className = 'fast-card';
+    statusEl.textContent = 'POST NIJE AKTIVAN';
+    timeEl.textContent = '00:00:00';
+    subEl.textContent = 'Pritisni Start kad završiš obrok';
+    btn.className = 'fast-btn start';
+    btn.textContent = '▶ Start';
+    fill.style.width = '0%';
+    return;
+  }
+
+  const elapsed = Date.now() - fastState.startTs;
+  const goalMs = fastState.goal * 3600000;
+  const pct = Math.min((elapsed / goalMs) * 100, 100);
+  const remaining = goalMs - elapsed;
+  const fmt = ms => {
+    const s = Math.floor(Math.abs(ms) / 1000);
+    const h = Math.floor(s / 3600), m = Math.floor((s % 3600) / 60), sec = s % 60;
+    return `${String(h).padStart(2,'0')}:${String(m).padStart(2,'0')}:${String(sec).padStart(2,'0')}`;
+  };
+  const isEating = elapsed >= goalMs;
+
+  card.className = isEating ? 'fast-card eating' : 'fast-card active';
+  statusEl.textContent = isEating ? 'PROZOR ZA JELO OTVOREN 🎉' : 'POST AKTIVAN';
+  timeEl.textContent = fmt(elapsed);
+  subEl.textContent = isEating
+    ? `Cilj ${fastState.goal}h dostignut! Možeš jesti.`
+    : `Do cilja ${fastState.goal}h: ${fmt(remaining)}`;
+  btn.className = 'fast-btn stop';
+  btn.textContent = '■ Stop';
+  fill.style.width = pct + '%';
+}
+
+// =====================
+// HABIT COMPLETION STATS
+// =====================
+function renderHabitStats() {
+  const days = getLastNDays(30);
+  const today = todayKey();
+  const activeDays = days.filter(d => d <= today);
+  if (!activeDays.length || !habits.length) {
+    document.getElementById('habitStatsNoData').style.display = 'block';
+    document.getElementById('habitStatsList').innerHTML = '';
+    return;
+  }
+  document.getElementById('habitStatsNoData').style.display = 'none';
+  const rows = habits.map(h => {
+    let done = 0;
+    activeDays.forEach(d => { if (habitLog[d] && habitLog[d][h.id]) done++; });
+    const pct = Math.round((done / activeDays.length) * 100);
+    const fillClass = pct >= 70 ? '' : pct >= 40 ? 'mid' : 'low';
+    return { h, pct, fillClass };
+  }).sort((a,b) => b.pct - a.pct);
+  document.getElementById('habitStatsList').innerHTML = rows.map(({h,pct,fillClass}) => `
+    <div class="habit-stat-row">
+      <div class="habit-stat-emoji">${h.emoji}</div>
+      <div class="habit-stat-name">${h.name}</div>
+      <div class="habit-stat-bar-wrap">
+        <div class="habit-stat-bar"><div class="habit-stat-fill ${fillClass}" style="width:${pct}%"></div></div>
+      </div>
+      <div class="habit-stat-pct">${pct}%</div>
+    </div>`).join('');
+}
+
+// =====================
+// WEEKLY REVIEW
+// =====================
+let weekOffset = 0;
+
+function getWeekDays(offset) {
+  const now = new Date();
+  const dow = now.getDay();
+  const monday = new Date(now);
+  monday.setDate(now.getDate() - ((dow === 0 ? 7 : dow) - 1) + offset * 7);
+  return Array.from({length:7}, (_,i) => {
+    const d = new Date(monday); d.setDate(monday.getDate() + i);
+    return d.toISOString().split('T')[0];
+  });
+}
+
+function changeWeek(dir) {
+  weekOffset += dir;
+  document.getElementById('weekNextBtn').disabled = weekOffset >= 0;
+  renderWeeklyReview();
+}
+
+function renderWeeklyReview() {
+  const days = getWeekDays(weekOffset);
+  const today = todayKey();
+  const fmt = d => { const [,m,day] = d.split('-'); return `${day}.${m}`; };
+  const activeDays = days.filter(d => d <= today);
+
+  document.getElementById('weekNavLabel').textContent =
+    weekOffset === 0 ? 'Ova sedmica' : weekOffset === -1 ? 'Prošla sedmica' : `Sedmica ${fmt(days[0])}`;
+  document.getElementById('weeklyPeriodLabel').textContent = `${fmt(days[0])} — ${fmt(days[6])}`;
+
+  // Food
+  const foodDays = activeDays.filter(d => allLog[d] && allLog[d].length > 0);
+  let totalKcal=0, totalP=0, totalF=0, totalC=0;
+  foodDays.forEach(d => allLog[d].forEach(e => {
+    const mult = e.amount / 100;
+    totalKcal += e.food.kcal*mult; totalP += e.food.p*mult;
+    totalF += e.food.f*mult; totalC += e.food.c*mult;
+  }));
+  const avgKcal = foodDays.length ? Math.round(totalKcal/foodDays.length) : 0;
+
+  // Habits
+  let hDone=0, hTotal=0;
+  activeDays.forEach(d => habits.forEach(h => {
+    hTotal++;
+    if (habitLog[d] && habitLog[d][h.id]) hDone++;
+  }));
+  const habitPct = hTotal ? Math.round((hDone/hTotal)*100) : 0;
+
+  // Weight delta
+  const wEntries = days.map(d => weightLog[d]).filter(Boolean);
+  const weightDelta = wEntries.length >= 2 ? wEntries[wEntries.length-1] - wEntries[0] : null;
+
+  // Mood
+  const moodMap = {'😤':1,'😐':2,'🙂':3,'😄':4,'🔥':5};
+  let moodSum=0, moodCount=0;
+  const jLog = JSON.parse(localStorage.getItem('tracker_journal')||'{}');
+  activeDays.forEach(d => { if (jLog[d]) jLog[d].forEach(e => { if (e.mood && moodMap[e.mood]) { moodSum+=moodMap[e.mood]; moodCount++; } }); });
+  const avgMood = moodCount ? (moodSum/moodCount).toFixed(1) : null;
+
+  // Score & grade
+  let score = (habitPct >= 80 ? 40 : habitPct >= 60 ? 25 : habitPct*0.4)
+    + (foodDays.length >= activeDays.length*0.7 ? 30 : foodDays.length/Math.max(activeDays.length,1)*30)
+    + (avgKcal > 0 && avgKcal <= calorieGoal*1.1 ? 30 : avgKcal > 0 ? 15 : 0);
+
+  const [grade, gradeLabel] = score >= 85 ? ['🏆','Odlična sedmica!'] : score >= 65 ? ['💪','Dobra sedmica'] : score >= 45 ? ['🌱','Solidno, može bolje'] : ['😤','Treba više rada'];
+  document.getElementById('weeklyGrade').textContent = grade;
+  document.getElementById('weeklyGradeLabel').textContent = gradeLabel;
+
+  // Cards
+  document.getElementById('weeklyGrid').innerHTML = `
+    <div class="weekly-card"><div class="weekly-card-icon">🔥</div>
+      <div class="weekly-card-val ${avgKcal > calorieGoal*1.1 ? 'orange' : ''}">${avgKcal||'--'}</div>
+      <div class="weekly-card-label">Prosjek kcal/dan</div></div>
+    <div class="weekly-card"><div class="weekly-card-icon">✅</div>
+      <div class="weekly-card-val ${habitPct>=70?'':habitPct>=40?'orange':'red'}">${habitPct}%</div>
+      <div class="weekly-card-label">Navike završene</div></div>
+    <div class="weekly-card"><div class="weekly-card-icon">📔</div>
+      <div class="weekly-card-val">${foodDays.length}/${activeDays.length}</div>
+      <div class="weekly-card-label">Dana logovano</div></div>
+    <div class="weekly-card"><div class="weekly-card-icon">😊</div>
+      <div class="weekly-card-val">${avgMood||'--'}</div>
+      <div class="weekly-card-label">Raspoloženje avg</div></div>
+    ${weightDelta!==null?`<div class="weekly-card"><div class="weekly-card-icon">⚖️</div>
+      <div class="weekly-card-val ${weightDelta<0?'':'orange'}">${weightDelta>0?'+':''}${weightDelta.toFixed(1)} kg</div>
+      <div class="weekly-card-label">Promjena težine</div></div>`:''}
+    <div class="weekly-card"><div class="weekly-card-icon">🥩</div>
+      <div class="weekly-card-val">${foodDays.length?Math.round(totalP/foodDays.length):'--'}g</div>
+      <div class="weekly-card-label">Proteini avg</div></div>`;
+
+  // Insights
+  const ins = [];
+  if (habitPct >= 80) ins.push({i:'🔥', t:`${habitPct}% navika završeno — fenomenalno!`});
+  else if (habitPct < 40 && activeDays.length > 2) ins.push({i:'⚠️', t:`Samo ${habitPct}% navika. Fokusiraj se na jutarnju rutinu.`});
+  if (avgKcal > calorieGoal*1.1) ins.push({i:'🍽️', t:`Prosjek ${avgKcal} kcal iznad cilja. Pazi na porcije.`});
+  else if (avgKcal > 0 && avgKcal <= calorieGoal*1.1) ins.push({i:'✅', t:`Kalorije pod kontrolom — prosjek ${avgKcal} kcal. Odlično!`});
+  if (foodDays.length < activeDays.length-1 && activeDays.length > 3) ins.push({i:'📝', t:`Logovao si hranu ${foodDays.length}/${activeDays.length} dana. Bolje praćenje = bolji rezultati.`});
+  if (weightDelta !== null && weightDelta < -0.3) ins.push({i:'📉', t:`Izgubio ${Math.abs(weightDelta).toFixed(1)} kg ove sedmice. Na dobrom putu!`});
+  if (!ins.length) ins.push({i:'💡', t:'Nastavi logovanje za detaljne uvide.'});
+  document.getElementById('weeklyInsights').innerHTML = ins.map(x =>
+    `<div class="weekly-insight"><div class="weekly-insight-title">${x.i} Uvid</div>${x.t}</div>`).join('');
+
+  // Habit breakdown
+  document.getElementById('weeklyHabitBreakdown').innerHTML = habits.map(h => {
+    let done=0; activeDays.forEach(d => { if(habitLog[d]&&habitLog[d][h.id]) done++; });
+    const pct = activeDays.length ? Math.round((done/activeDays.length)*100) : 0;
+    const fc = pct>=70?'':pct>=40?'mid':'low';
+    return `<div class="habit-stat-row">
+      <div class="habit-stat-emoji">${h.emoji}</div>
+      <div class="habit-stat-name">${h.name}</div>
+      <div class="habit-stat-bar-wrap"><div class="habit-stat-bar"><div class="habit-stat-fill ${fc}" style="width:${pct}%"></div></div></div>
+      <div class="habit-stat-pct">${pct}%</div></div>`;
+  }).join('') || '<div class="no-data-msg">Nema podataka.</div>';
+}
+
+// =====================
 // NAVIGATION
 // =====================
 function switchNav(page) {
@@ -3115,12 +3540,28 @@ function switchNav(page) {
   });
   if (page === 'history') renderHistory();
   if (page === 'journal') { renderJournalToday(); renderJournalHistory('all'); }
-  if (page === 'stats') renderStats();
+  if (page === 'stats') { renderStats(); renderHabitStats(); }
   if (page === 'habits') renderHabits();
+  if (page === 'weekly') { weekOffset = 0; document.getElementById('weekNextBtn').disabled = true; renderWeeklyReview(); }
 }
 
 // =====================
-// WEIGHT HERO
+// INIT
+// =====================
+loadData();
+loadJournal();
+loadHabits();
+loadWeightLog();
+loadFast();
+updateHeader();
+updateTotals();
+updateWeightHero();
+renderFoodLog();
+filterFoods();
+renderJournalToday();
+renderJournalHistory('all');
+setInterval(updateJournalTime, 1000);
+updateJournalTime();
 // =====================
 function updateWeightHero() {
   const entries = Object.entries(weightLog).sort((a,b) => a[0].localeCompare(b[0]));
@@ -3267,23 +3708,6 @@ function scheduleNotifications() {
     '🍽️ Podsjetnik za hranu',
     todayLog.length === 0 ? 'Nisi još logovao nijedan obrok danas!' : 'Ne zaboravi logovati sve obroke 📝');
 }
-
-// =====================
-// INIT
-// =====================
-loadData();
-loadJournal();
-loadHabits();
-loadWeightLog();
-updateHeader();
-updateTotals();
-updateWeightHero();
-renderFoodLog();
-filterFoods();
-renderJournalToday();
-renderJournalHistory('all');
-setInterval(updateJournalTime, 1000);
-updateJournalTime();
 </script>
 
 <script>
