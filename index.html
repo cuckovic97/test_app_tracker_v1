@@ -110,7 +110,7 @@
   }
 
   /* SECTIONS */
-  .section { display: none; padding: 20px; }
+  .section { display: none; padding: 20px 20px 100px; }
   .section.active { display: block; }
 
   /* CALORIE RING */
@@ -2067,6 +2067,9 @@ let selectedMealTime = null;
 let todayLog = [];
 let allLog = {};
 let calorieGoal = 2000;
+let notifSettings = { morning: false, morningTime: '07:00', evening: false, eveningTime: '21:00', food: false, foodTime: '12:00' };
+let notifTimers = [];
+let _notifLoading = false;
 
 const todayKey = () => new Date().toISOString().split('T')[0];
 
@@ -3615,11 +3618,6 @@ function updateWeightHero() {
 // =====================
 // NOTIFICATIONS
 // =====================
-let notifSettings = { morning: false, morningTime: '07:00', evening: false, eveningTime: '21:00', food: false, foodTime: '12:00' };
-let notifTimers = [];
-
-let _notifLoading = false; // kept for safety
-
 function loadNotifSettings() {
   const saved = localStorage.getItem('tracker_notif');
   if (saved) {
