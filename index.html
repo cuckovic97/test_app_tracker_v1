@@ -3636,15 +3636,38 @@ function loadNotifSettings() {
 }
 
 function saveNotifSettings() {
-  notifSettings.morning     = document.getElementById('notifMorningOn').checked;
-  notifSettings.morningTime = document.getElementById('notifMorningTime').value;
-  notifSettings.evening     = document.getElementById('notifEveningOn').checked;
-  notifSettings.eveningTime = document.getElementById('notifEveningTime').value;
-  notifSettings.food        = document.getElementById('notifFoodOn').checked;
-  notifSettings.foodTime    = document.getElementById('notifFoodTime').value;
-  localStorage.setItem('tracker_notif', JSON.stringify(notifSettings));
+  const morningOn  = document.getElementById('notifMorningOn');
+  const morningT   = document.getElementById('notifMorningTime');
+  const eveningOn  = document.getElementById('notifEveningOn');
+  const eveningT   = document.getElementById('notifEveningTime');
+  const foodOn     = document.getElementById('notifFoodOn');
+  const foodT      = document.getElementById('notifFoodTime');
+
+  if (!morningOn || !morningT || !eveningOn || !eveningT || !foodOn || !foodT) {
+    alert('GREŠKA: Neki element nije pronađen! ' + [morningOn,morningT,eveningOn,eveningT,foodOn,foodT].map((el,i)=>el?'OK':'NULL_'+i).join(', '));
+    return;
+  }
+
+  notifSettings.morning     = morningOn.checked;
+  notifSettings.morningTime = morningT.value;
+  notifSettings.evening     = eveningOn.checked;
+  notifSettings.eveningTime = eveningT.value;
+  notifSettings.food        = foodOn.checked;
+  notifSettings.foodTime    = foodT.value;
+
+  const json = JSON.stringify(notifSettings);
+  localStorage.setItem('tracker_notif', json);
+
+  // Verify it was actually saved
+  const verify = localStorage.getItem('tracker_notif');
+  if (verify !== json) {
+    alert('GREŠKA: localStorage nije sačuvao! Možda je privatni mod ili blokiran storage.');
+    return;
+  }
+
   scheduleNotifications();
   showToast('Notifikacije sačuvane ✓');
+  alert('Sačuvano OK: ' + json);
 }
 
 function updateNotifPermBtn() {
