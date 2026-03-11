@@ -3617,20 +3617,26 @@ function updateWeightHero() {
 let notifSettings = { morning: false, morningTime: '07:00', evening: false, eveningTime: '21:00', food: false, foodTime: '12:00' };
 let notifTimers = [];
 
+let _notifLoading = false;
+
 function loadNotifSettings() {
   const saved = localStorage.getItem('tracker_notif');
   if (saved) notifSettings = { ...notifSettings, ...JSON.parse(saved) };
+  // Set flag so saveNotifSettings ignores change events during init
+  _notifLoading = true;
   document.getElementById('notifMorningOn').checked = notifSettings.morning;
   document.getElementById('notifMorningTime').value = notifSettings.morningTime;
   document.getElementById('notifEveningOn').checked = notifSettings.evening;
   document.getElementById('notifEveningTime').value = notifSettings.eveningTime;
   document.getElementById('notifFoodOn').checked = notifSettings.food;
   document.getElementById('notifFoodTime').value = notifSettings.foodTime;
+  _notifLoading = false;
   updateNotifPermBtn();
   scheduleNotifications();
 }
 
 function saveNotifSettings() {
+  if (_notifLoading) return; // ignore events fired during init
   notifSettings.morning = document.getElementById('notifMorningOn').checked;
   notifSettings.morningTime = document.getElementById('notifMorningTime').value;
   notifSettings.evening = document.getElementById('notifEveningOn').checked;
